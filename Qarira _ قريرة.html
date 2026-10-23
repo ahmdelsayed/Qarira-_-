@@ -1,0 +1,777 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style><meta name="theme-color" content="#FAF7F3"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Qarira"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="format-detection" content="telephone=no"></head><body>
+<title>Qarira | قريرة</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Nunito+Sans:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: mobile-first app shell. Bottom tab bar on phones, side rail on desktop. Single warm light theme by design. */
+:root{
+  --bg:#FAF7F3; --surface:#FFFFFF; --blue:#A0C9F5; --blue-soft:#E4EFFC; --pink:#F7AFC4; --pink-soft:#FDE9F0;
+  --peach:#FADBC4; --brown:#6D524D; --ink:#3B2C29; --muted:#6D524D; --medblue:#568BCB; --link:#2C66AA; --btn-ink:#16304F;
+  --line:#EADFD6; --ok:#1F7A4D; --ok-bg:#E3F4EA; --warn:#8A5A00; --warn-bg:#FFF1D6; --err:#B3261E; --err-bg:#FDE7E5;
+  --r-s:8px; --r-m:16px; --r-l:24px; --sh:0 1px 2px rgba(109,82,77,.08),0 6px 20px rgba(109,82,77,.08);
+  --f-en:'Nunito Sans',system-ui,-apple-system,'Segoe UI',sans-serif; --f-ar:'Cairo','Segoe UI',Tahoma,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-en);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+[dir=rtl],[dir=rtl] button,[dir=rtl] input,[dir=rtl] select,[dir=rtl] textarea{font-family:var(--f-ar)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+:focus-visible{outline:3px solid var(--medblue);outline-offset:2px;border-radius:6px}
+h1,h2,h3,p{margin:0;text-wrap:balance}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.flip{display:inline-flex}[dir=rtl] .flip{transform:scaleX(-1)}
+.fade{animation:fade .28s ease both}@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* shell */
+.shell{min-height:100vh}
+.main{max-width:720px;margin:0 auto;padding-block:8px 120px}
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--bg);display:flex;align-items:center;gap:8px;padding-block:10px;min-height:60px}
+.hdr .grow{flex:1;min-width:0}
+.hdr h1{font-size:1.25rem;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.iconbtn{position:relative;width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:var(--surface);box-shadow:var(--sh);color:var(--brown)}
+.iconbtn:hover{background:var(--blue-soft)}.iconbtn:active{transform:scale(.95)}
+.iconbtn.flat{background:transparent;box-shadow:none}
+.badge-n{position:absolute;top:-2px;inset-inline-end:-2px;min-width:20px;height:20px;border-radius:10px;background:var(--pink);color:#5A1D31;font-size:.72rem;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;border:2px solid var(--bg)}
+.langbtn{height:44px;padding:0 14px;border-radius:22px;background:var(--surface);box-shadow:var(--sh);font-weight:700;color:var(--brown)}
+.demo-pill{display:inline-flex;align-items:center;gap:6px;background:var(--peach);color:#5B3A1E;border-radius:999px;padding:4px 10px;font-size:.75rem;font-weight:800;letter-spacing:.02em}
+
+/* nav */
+.nav{position:fixed;bottom:0;inset-inline:0;z-index:45;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;
+  padding:6px max(8px,env(safe-area-inset-left,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-right,0px))}
+.nav .brand{display:none}
+.nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 4px;border-radius:14px;color:var(--muted);font-size:.74rem;font-weight:700;min-height:56px;position:relative}
+.nav button[aria-current=page]{color:var(--btn-ink);background:var(--blue-soft)}
+.nav button:hover{background:var(--blue-soft)}
+.nav .badge-n{inset-inline-end:calc(50% - 22px);top:2px}
+.demofab{position:fixed;inset-inline-end:max(16px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:44;background:var(--brown);color:#fff;border-radius:999px;padding:10px 16px;font-weight:800;font-size:.85rem;display:flex;gap:8px;align-items:center;box-shadow:var(--sh)}
+@media(min-width:900px){
+  body{padding-left:0;padding-right:0}
+  .shell{display:flex}
+  .nav{inset:0 auto 0 0;width:240px;flex-direction:column;justify-content:flex-start;gap:6px;padding:24px 16px;border-top:0;border-inline-end:1px solid var(--line)}
+  [dir=rtl] .nav{inset:0 0 0 auto}
+  .nav .brand{display:flex;padding:4px 8px 20px}
+  .nav button{flex:0 0 auto;flex-direction:row;gap:12px;font-size:1rem;padding:12px 14px;min-height:48px}
+  .nav .badge-n{inset-inline-end:12px;top:12px}
+  .main{margin-inline-start:260px;margin-inline-end:auto;width:min(720px,calc(100% - 300px));padding-block:8px 60px}
+  .demofab{bottom:24px}
+}
+
+/* ui */
+.card{background:var(--surface);border-radius:var(--r-l);box-shadow:var(--sh);padding:16px}
+.card.tap{width:100%;display:block;transition:transform .15s,box-shadow .15s}
+.card.tap:hover{box-shadow:0 2px 4px rgba(109,82,77,.1),0 10px 26px rgba(109,82,77,.14)}.card.tap:active{transform:scale(.985)}
+.stack{display:flex;flex-direction:column;gap:16px}.row{display:flex;align-items:center;gap:12px}.row.wrap{flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grow{flex:1;min-width:0}
+.h2{font-size:1.1rem;font-weight:800}.sub{color:var(--muted);font-size:.9rem}.small{font-size:.8rem;color:var(--muted)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:24px;font-weight:800;background:var(--blue);color:var(--btn-ink);transition:background .15s,transform .1s;text-align:center}
+.btn:hover{background:#8FBDEE}.btn:active{transform:scale(.97)}.btn[disabled]{opacity:.55;cursor:not-allowed}
+.btn.sec{background:var(--surface);box-shadow:inset 0 0 0 2px var(--blue);color:var(--btn-ink)}
+.btn.pink{background:var(--pink);color:#4A1426}.btn.danger{background:var(--err);color:#fff}.btn.block{width:100%}.btn.sm{min-height:40px;padding:0 14px;font-size:.9rem}
+.btn.ghost{background:transparent;color:var(--link);padding:0 8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 12px;font-size:.82rem;font-weight:700;background:var(--blue-soft);color:var(--btn-ink)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}.chip.warn{background:var(--warn-bg);color:var(--warn)}.chip.err{background:var(--err-bg);color:var(--err)}.chip.pink{background:var(--pink-soft);color:#7A2A45}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.tab{padding:8px 16px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1.5px var(--line);font-weight:700;white-space:nowrap;min-height:40px}
+.tab[aria-selected=true],.tab[aria-pressed=true]{background:var(--blue);box-shadow:none;color:var(--btn-ink)}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-weight:700;font-size:.92rem}
+.inp{min-height:48px;border-radius:14px;border:2px solid var(--line);background:var(--surface);padding:0 14px;width:100%}
+.inp:hover{border-color:var(--blue)}.inp:focus{border-color:var(--medblue);outline:none;box-shadow:0 0 0 3px rgba(86,139,203,.3)}
+.inp.bad{border-color:var(--err)}.inp[disabled]{background:#F1ECE6}
+.errmsg{color:var(--err);font-size:.85rem;font-weight:600;display:flex;gap:6px;align-items:flex-start}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:14px;font-size:.9rem;font-weight:600}
+.alert.err{background:var(--err-bg);color:var(--err)}.alert.warn{background:var(--warn-bg);color:var(--warn)}.alert.ok{background:var(--ok-bg);color:var(--ok)}.alert.info{background:var(--blue-soft);color:var(--btn-ink)}
+.ico{flex:none}
+.tile{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none;background:var(--blue-soft);color:var(--link)}
+.tile.pink{background:var(--pink-soft);color:#9A3A5C}.tile.peach{background:var(--peach);color:#6B4220}
+.skel{background:linear-gradient(90deg,#EFE8E0 25%,#F8F3EC 37%,#EFE8E0 63%);background-size:400% 100%;animation:sk 1.3s infinite;border-radius:12px}
+@keyframes sk{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.list{display:flex;flex-direction:column}
+.li{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line)}.li:last-child{border-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--pink);flex:none;margin-top:7px}
+.empty{text-align:center;padding:32px 16px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:12px}
+.tl{position:relative;padding-inline-start:28px}
+.tl::before{content:"";position:absolute;inset-block:6px;inset-inline-start:9px;width:2px;background:var(--line)}
+.tl .ev{position:relative;padding-bottom:18px}.tl .ev::before{content:"";position:absolute;inset-inline-start:-26px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--surface);border:3px solid var(--blue)}
+.tl .ev.done::before{background:var(--medblue);border-color:var(--medblue)}.tl .ev.next::before{border-color:var(--pink);background:var(--pink)}
+.strike{text-decoration:line-through;opacity:.7}
+
+/* sheet / toast */
+.back{position:fixed;inset:0;z-index:70;background:rgba(59,44,41,.45);display:flex;align-items:flex-end;justify-content:center;animation:fadeb .2s both}
+@keyframes fadeb{from{opacity:0}to{opacity:1}}
+.sheet{background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;border-radius:28px 28px 0 0;padding:20px 20px calc(24px + env(safe-area-inset-bottom,0px));animation:up .28s ease both}
+@keyframes up{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:700px){.back{align-items:center}.sheet{border-radius:28px}}
+.toasts{position:fixed;inset-inline:0;bottom:calc(150px + env(safe-area-inset-bottom,0px));z-index:90;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 16px}
+.toast{background:var(--ink);color:#fff;padding:12px 18px;border-radius:16px;font-weight:700;box-shadow:var(--sh);max-width:420px;animation:fade .25s both}
+.offline{position:sticky;top:calc(env(safe-area-inset-top,0px) + 60px);z-index:39}
+
+/* onboarding / login */
+.center{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:20px;text-align:center}
+.splash-bar{width:140px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.splash-bar i{display:block;height:100%;width:40%;background:var(--blue);border-radius:3px;animation:slide 1.2s ease-in-out infinite}
+@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+[dir=rtl] .splash-bar i{animation-direction:reverse}
+.ob{min-height:100vh;display:flex;flex-direction:column;padding-block:16px 24px;max-width:520px;margin:0 auto}
+.ob .art{flex:1;display:flex;align-items:center;justify-content:center;padding:16px 0}
+.dots{display:flex;gap:8px;justify-content:center}.dots i{width:10px;height:10px;border-radius:5px;background:var(--line);transition:all .25s}.dots i.on{width:28px;background:var(--medblue)}
+.login{max-width:480px;margin:0 auto;padding-block:24px 48px}
+
+/* camera */
+.cam{position:relative;border-radius:var(--r-l);overflow:hidden;background:#1B1412;aspect-ratio:16/10;max-height:70vh;width:100%;box-shadow:var(--sh)}
+.cam.fs{position:fixed;inset:0;z-index:80;border-radius:0;aspect-ratio:auto;max-height:none;padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.cam .feed{position:absolute;inset:0;transition:transform .3s,filter .3s;transform-origin:center}
+.cam .ov{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:12px;pointer-events:none;color:#fff}
+.cam .ov>*{pointer-events:auto}
+.livepill{display:inline-flex;align-items:center;gap:6px;background:rgba(0,0,0,.55);border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:800;color:#fff}
+.livepill b{width:8px;height:8px;border-radius:50%;background:#FF5C7A;animation:pulse 1.4s infinite}.livepill.off b{background:#999;animation:none}
+@keyframes pulse{50%{opacity:.25}}
+.cam .msg{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:24px;background:#241B19;color:#fff}
+.camctl{display:flex;gap:8px;flex-wrap:wrap}
+.camctl .iconbtn{background:rgba(0,0,0,.55);color:#fff;box-shadow:none}
+.breath{transform-origin:160px 150px;animation:breath 3.4s ease-in-out infinite}@keyframes breath{50%{transform:scaleY(1.035)}}
+.sway{animation:sway 6s ease-in-out infinite;transform-origin:160px 60px}@keyframes sway{50%{transform:rotate(1.2deg)}}
+.demotag{background:rgba(250,219,196,.95);color:#4A2D14;font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:6px}
+
+/* charts */
+.chart{width:100%;height:auto;display:block;direction:ltr}
+.chart text{font-size:10.5px;fill:var(--muted);font-variant-numeric:tabular-nums;font-family:inherit}
+.chart .pt{cursor:pointer}
+input[type=range]{width:100%;accent-color:var(--medblue);min-height:32px}
+.val{font-size:2rem;font-weight:800;line-height:1.1}
+.chat{display:flex;flex-direction:column;gap:10px;padding:8px 0}
+.bub{max-width:82%;padding:10px 14px;border-radius:20px;white-space:pre-wrap;overflow-wrap:anywhere}
+.bub.me{align-self:flex-end;background:var(--blue);color:var(--btn-ink);border-end-end-radius:6px}
+.bub.nu{align-self:flex-start;background:var(--surface);box-shadow:var(--sh);border-end-start-radius:6px}
+.meta{font-size:.72rem;color:var(--muted);margin-top:4px;display:flex;gap:8px;flex-wrap:wrap}
+.composer{position:sticky;bottom:calc(76px + env(safe-area-inset-bottom,0px));background:var(--bg);padding-block:8px;display:flex;gap:8px;z-index:30}
+@media(min-width:900px){.composer{bottom:0}}
+.typing i{display:inline-block;width:6px;height:6px;margin:0 2px;border-radius:50%;background:var(--brown);animation:pulse 1s infinite}.typing i:nth-child(2){animation-delay:.2s}.typing i:nth-child(3){animation-delay:.4s}
+.switch{position:relative;width:52px;height:30px;border-radius:15px;background:#D8CCC2;transition:background .2s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;inset-inline-start:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch[aria-checked=true]{background:var(--medblue)}.switch[aria-checked=true]::after{transform:translateX(22px)}[dir=rtl] .switch[aria-checked=true]::after{transform:translateX(-22px)}
+.linkrow{display:flex;align-items:center;gap:12px;padding:14px 4px;border-bottom:1px solid var(--line);width:100%;min-height:56px}.linkrow:last-child{border-bottom:0}
+.hide-d{display:inline-flex}
+@media(min-width:900px){.hide-d{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<style id="native-layer">
+/* ===== Native app layer: additions only, nothing above is changed ===== */
+html{-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
+body{-webkit-tap-highlight-color:transparent;-webkit-font-smoothing:antialiased;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+input,textarea,select,.bub{-webkit-user-select:text;user-select:text}
+img,svg{-webkit-user-drag:none;-webkit-touch-callout:none}
+.btn,.card.tap,.tab,.linkrow,.langbtn{position:relative;overflow:hidden}
+.rp-on::after{content:"";position:absolute;left:var(--rx);top:var(--ry);width:var(--rs);height:var(--rs);margin:calc(var(--rs)/-2) 0 0 calc(var(--rs)/-2);border-radius:50%;background:currentColor;opacity:0;pointer-events:none;animation:rpl .55s ease-out}
+@keyframes rpl{from{transform:scale(0);opacity:.18}to{transform:scale(1);opacity:0}}
+@supports(height:100dvh){.shell,.center,.ob{min-height:100dvh}}
+
+/* phones and small tablets: Play-Store style app chrome */
+@media(max-width:899px){
+ .main{padding-block:2px calc(120px + env(safe-area-inset-bottom,0px))}
+ .hdr{margin-left:calc(-1*max(16px,env(safe-area-inset-left,0px)));margin-right:calc(-1*max(16px,env(safe-area-inset-right,0px)));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));gap:4px;transition:box-shadow .2s}
+ body.scrolled .hdr{box-shadow:0 1px 0 var(--line),0 6px 16px rgba(109,82,77,.08)}
+ .hdr .iconbtn{width:40px;height:40px;background:transparent;box-shadow:none}
+ .hdr .iconbtn:active{background:var(--blue-soft)}
+ .hdr .langbtn{height:34px;padding:0 12px;font-size:.85rem;background:transparent;box-shadow:inset 0 0 0 1.5px var(--line)}
+ .demo-pill{font-size:0;gap:0;padding:7px}
+ .demo-pill svg{width:16px;height:16px}
+ .nav{border-top:0;background:var(--surface);box-shadow:0 -1px 0 var(--line),0 -8px 24px rgba(109,82,77,.07);padding-top:0;padding-bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+ .nav button{position:relative;min-height:64px;padding:8px 4px 4px;gap:6px;border-radius:0;background:none!important;font-size:.75rem}
+ .nav button::before{content:"";position:absolute;top:8px;left:50%;width:64px;height:32px;margin-left:-32px;border-radius:16px;background:transparent;transform:scaleX(.4);transition:background .2s,transform .25s}
+ .nav button[aria-current=page]{font-weight:800}
+ .nav button[aria-current=page]::before{background:#CFE3FA;transform:none}
+ .nav button:active::before{background:#DCEAFB;transform:none}
+ .nav button .ico{position:relative;z-index:1;margin-top:4px}
+ .nav .badge-n{top:6px;z-index:2}
+ .composer{bottom:calc(80px + env(safe-area-inset-bottom,0px))}
+ .demofab{bottom:calc(88px + env(safe-area-inset-bottom,0px));border-radius:18px;box-shadow:0 4px 14px rgba(59,44,41,.28)}
+ .card{border-radius:20px;box-shadow:0 1px 2px rgba(109,82,77,.06),0 2px 10px rgba(109,82,77,.07)}
+ .btn{min-height:52px;border-radius:26px}.btn.sm{min-height:40px}
+}
+@media(max-width:699px){
+ .sheet{max-height:90dvh;box-shadow:0 -6px 30px rgba(0,0,0,.14)}
+ .sheet::before{content:"";display:block;width:36px;height:4px;border-radius:2px;background:#D8CCC2;margin:-8px auto 14px}
+}
+
+/* any phone height: onboarding art shrinks so title, dots and buttons always fit on screen */
+.ob{padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+.ob .art{min-height:0;padding:8px 0}
+.ob .art>div{width:min(280px,70vw,32dvh)!important}
+.ob .art svg.ico{width:clamp(36px,9dvh,64px);height:clamp(36px,9dvh,64px)}
+@media(max-height:760px){.ob h1,.login h1{font-size:1.45rem!important}.ob .sub{font-size:.95rem!important}.ob .stack{gap:12px}}
+@media(max-height:620px){.ob .art>div{width:min(160px,40vw,28dvh)!important}.ob .btn{min-height:44px}}
+@media(max-width:360px){.hdr h1{font-size:1.05rem}.langbtn{padding:0 9px!important}.nav button{font-size:.68rem}}
+/* desktop: keep the layout, center the content in the space beside the rail */
+@media(min-width:900px){
+ .main{margin-inline-start:max(260px,calc(240px + (100% - 240px - 720px)/2))}
+}
+</style>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/htm@3.1.1/dist/htm.umd.js"></script>
+<script>
+(function(){
+"use strict";
+const {useState,useEffect,useRef,useContext,createContext,useCallback,useMemo} = React;
+const html = htm.bind(React.createElement);
+const Ctx = createContext(null);
+
+/* ---------- strings [en, ar] ---------- */
+const S = {
+app:["Qarira","قريرة"], tagline:["Close to your baby, always","قريبة من طفلك، دايمًا"],
+demo:["Demo mode","وضع تجريبي"], demoNote:["Fictional data. Not connected to any hospital.","بيانات وهمية. مش متصل بأي مستشفى."],
+skip:["Skip","تخطّي"], next:["Next","التالي"], prev:["Previous","السابق"], start:["Get started","ابدأ"], back:["Back","رجوع"], close:["Close","إغلاق"], cancel:["Cancel","إلغاء"], confirm:["Confirm","تأكيد"], open:["Open","فتح"],
+ob1t:["Stay close to your baby","خليكي قريبة من طفلك"], ob1d:["Watch an authorized live camera and feel close, even from home.","شوفي بث الكاميرا المصرّح به واطمّني حتى وانتي في البيت."],
+ob2t:["Follow every precious update","تابعي كل تطوّر صغير"], ob2d:["Weight, temperature, feeding and notes from the care team, in one calm place.","الوزن والحرارة والرضاعة وملاحظات الفريق الطبي في مكان واحد هادي."],
+ob3t:["Always connected with their care team","على تواصل دايم مع فريق الرعاية"], ob3d:["Message your baby's nurse and get a reminder before every visit.","ابعتي رسالة لممرضة طفلك واستلمي تذكير قبل كل زيارة."],
+obStep:["Step {a} of {b}","الخطوة {a} من {b}"],
+lgT:["Verify your access","تأكيد الدخول"], lgD:["Enter the details the hospital gave you.","اكتبي البيانات اللي المستشفى إدّتهالك."],
+hospital:["Hospital","المستشفى"], code:["Baby access code","كود دخول الطفل"], bname:["Baby's full name","اسم الطفل بالكامل"], bdob:["Baby's date of birth","تاريخ ميلاد الطفل"],
+selH:["Select hospital","اختاري المستشفى"], hDemo:["Demo Hospital (fictional)","مستشفى تجريبي (وهمي)"], hOther:["Other hospital (not connected)","مستشفى آخر (غير متصل)"],
+verify:["Verify and continue","تحقق وكمّلي"], verifying:["Verifying…","بنتحقق…"], useDemo:["Use the demo account","جرّبي الحساب التجريبي"],
+eReq:["This field is required.","الحقل ده مطلوب."], eInv:["We couldn't verify these details. Check them and try again.","مقدرناش نتحقق من البيانات. راجعيها وحاولي تاني."],
+eExp:["This access code has expired. Ask the NICU team for a new one.","الكود ده انتهت صلاحيته. اطلبي كود جديد من فريق العناية."], eOth:["This hospital isn't connected to Qarira yet.","المستشفى دي لسه مش متصلة بقريرة."],
+okV:["Verified. Welcome!","تم التحقق. أهلًا بيكي!"],
+demoHint:["Demo values: code QRR-DEMO-2026, name Layla Mahmoud, date 2026-09-24. Try QRR-OLD-2025 to see an expired code.","قيم تجريبية: الكود QRR-DEMO-2026 والاسم ليلى محمود والتاريخ 2026-09-24. جرّبي QRR-OLD-2025 علشان تشوفي الكود المنتهي."],
+secNote:["This check runs only in your browser for the demo. A real launch verifies on a secure server.","التحقق ده تجريبي وبيتم في المتصفح بس. في الإطلاق الحقيقي بيتم على سيرفر آمن."],
+sessExp:["Your session expired. Please verify again.","الجلسة انتهت. من فضلك اتحققي تاني."],
+nHome:["Home","الرئيسية"], nCam:["Camera","الكاميرا"], nHealth:["Health","الصحة"], nMsg:["Messages","الرسائل"], nNotif:["Notifications","الإشعارات"], nProf:["Profile","حسابي"], nVisit:["Visits","الزيارات"],
+hello:["Hello, {n}","أهلًا يا {n}"], helloSub:["Here is how {b} is doing.","دي آخر أخبار {b}."], dayOf:["Day {n} of life","اليوم {n} من العمر"],
+latestUp:["Latest update","آخر تحديث"], updated:["Updated {t}","اتحدّث {t}"], liveCam:["Live camera","الكاميرا المباشرة"], nurseChat:["Nurse chat","محادثة الممرضة"], nextVisit:["Next visit","الزيارة الجاية"], noVisit:["No visit scheduled","مفيش زيارة محددة"],
+camOk:["Camera available","الكاميرا متاحة"], camNo:["Camera not available","الكاميرا مش متاحة"], nurse:["Assigned nurse","الممرضة المسؤولة"], recent:["Recent notifications","آخر الإشعارات"], seeAll:["See all","عرض الكل"],
+cs_live:["Live","مباشر"], cs_sleeping:["Baby is sleeping","الطفل نايم"], cs_exam:["Medical examination","فحص طبي"], cs_paused:["Camera paused","الكاميرا متوقفة مؤقتًا"], cs_lost:["Connection lost","انقطع الاتصال"], cs_unavail:["Camera unavailable","الكاميرا غير متاحة"],
+cm_exam:["The care team is examining your baby. The camera comes back when they finish.","الفريق الطبي بيفحص طفلك. الكاميرا هترجع أول ما يخلصوا."], cm_paused:["The camera is paused for a short time.","الكاميرا متوقفة لفترة قصيرة."],
+cm_lost:["We lost the connection to the camera.","الاتصال بالكاميرا اتقطع."], cm_unavail:["The camera isn't available for this bed right now.","الكاميرا مش متاحة للسرير ده دلوقتي."],
+retry:["Retry","حاولي تاني"], retrying:["Reconnecting…","بنعيد الاتصال…"], retryFail:["Still a weak connection. Try once more (demo).","لسه الاتصال ضعيف. جرّبي تاني (تجريبي)."], retryOk:["Camera reconnected (demo).","الكاميرا رجعت (تجريبي)."],
+checkAgain:["Check again","اتأكدي تاني"], stillNo:["Still unavailable. Ask the care team.","لسه مش متاحة. اسألي فريق الرعاية."],
+footage:["DEMO FOOTAGE · fictional, not a real hospital feed","لقطات تجريبية · وهمية ومش بث حقيقي من مستشفى"],
+zin:["Zoom in","تكبير"], zout:["Zoom out","تصغير"], night:["Night mode","الوضع الليلي"], fsOn:["Full screen","ملء الشاشة"], fsOff:["Exit full screen","خروج من ملء الشاشة"],
+connOk:["Connection: stable","الاتصال: مستقر"], connNo:["Connection: lost","الاتصال: مقطوع"], camPriv:["Recording and sharing are turned off.","التسجيل والمشاركة متوقفين."], demoCtl:["Demo controls","أدوات العرض التجريبي"], zoomLv:["Zoom {z}×","تكبير {z}×"],
+weight:["Weight","الوزن"], temp:["Temperature","الحرارة"], spo2:["Oxygen saturation","تشبّع الأكسجين"], feeding:["Feeding","الرضاعة"], meds:["Medication","الأدوية"], notes:["Doctor notes","ملاحظات الدكتور"],
+demoData:["Demo data, fictional","بيانات تجريبية وهمية"], noInterp:["Readings are shown as recorded. Ask the care team what they mean for your baby.","القراءات معروضة زي ما اتسجلت. اسألي فريق الرعاية يعني إيه بالنسبة لطفلك."],
+nDays:["{n} days","{n} يوم"], g:["g","جم"], c:["°C","°م"], pct:["%","٪"], ml:["ml","مل"],
+daily:["Daily report","تقرير اليوم"], chg:["Change from previous day","التغيير عن اليوم اللي قبله"], tapPt:["Tap a point or drag the slider to pick a day.","اضغطي على نقطة أو حرّكي المؤشر علشان تختاري يوم."],
+latest:["Latest","الأحدث"], onlyW:["Earlier days only include weight in this demo.","الأيام السابقة فيها الوزن بس في النسخة التجريبية."], measured:["Measured {t}","اتقاس {t}"], readings:["Recorded readings","القراءات المسجلة"],
+fType:["Type","النوع"], f_ebm:["Expressed breast milk","لبن أم مسحوب"], f_formula:["Formula","لبن صناعي"], f_tube:["Tube feed","رضاعة بالأنبوب"], f_direct:["Breastfeeding","رضاعة طبيعية"], amount:["Amount","الكمية"], nNote:["Nurse note","ملاحظة الممرضة"],
+dose:["Dose","الجرعة"], givenAt:["Given {t}","اتعطت {t}"], by:["By {n}","بواسطة {n}"], loadFail:["We couldn't load this. Try again.","مقدرناش نحمّل ده. حاولي تاني."], emptyD:["Nothing recorded yet.","لسه مفيش تسجيلات."],
+typeMsg:["Type a message…","اكتبي رسالتك…"], send:["Send","إرسال"], s_sent:["Sent","اتبعتت"], s_deliv:["Delivered","وصلت"], s_read:["Read","اتقرت"], avail:["Available now","متاحة دلوقتي"], away:["Away","مش متاحة"],
+awayNote:["The nurse is away. She will answer when she is back.","الممرضة مش متاحة دلوقتي. هترد عليكي أول ما ترجع."], emerg:["Chat is not for emergencies. In an emergency, speak to staff at the unit or call the hospital.","المحادثة مش للطوارئ. في الحالات الطارئة كلمي الفريق في القسم أو اتصلي بالمستشفى."],
+simRep:["Simulated reply (demo)","رد تجريبي (محاكاة)"], typing:["typing","بتكتب"], emptyChat:["No messages yet. Say hello.","لسه مفيش رسايل. ابدأي بالسلام."], chatSim:["Replies in this demo are simulated. They are not from a real nurse.","الردود في النسخة دي محاكاة. مش من ممرضة حقيقية."],
+r_feed:["Layla finished her last feed calmly. The details are in the Feeding records.","ليلى خلّصت آخر رضعة بهدوء. التفاصيل في سجل الرضاعة."],
+r_weight:["Weight is recorded each morning. You can see the chart under Health.","الوزن بيتسجل كل صباح. تقدري تشوفي الرسم البياني في الصحة."],
+r_visit:["Your next visit is listed under Visits, with instructions.","زيارتك الجاية موجودة في الزيارات مع التعليمات."], r_def:["Thank you for your message. The team will read it and reply during working hours.","شكرًا على رسالتك. الفريق هيقراها ويرد في ساعات العمل."],
+n_all:["All","الكل"], n_unread:["Unread","غير مقروء"], c_health:["Health updates","تحديثات صحية"], c_feeding:["Feeding updates","تحديثات الرضاعة"], c_nurse:["Nurse messages","رسائل الممرضة"], c_visit:["Visit reminders","تذكيرات الزيارات"], c_announce:["Hospital announcements","إعلانات المستشفى"], c_camera:["Camera updates","تحديثات الكاميرا"],
+markAll:["Mark all as read","تعليم الكل كمقروء"], markRead:["Mark as read","تعليم كمقروء"], caught:["You're all caught up.","مفيش جديد."], prefs:["Notification preferences","تفضيلات الإشعارات"], goTo:["Go to {s}","روحي لـ{s}"],
+vStatus:["Status","الحالة"], v_upcoming:["Upcoming","قادمة"], v_completed:["Completed","تمت"], v_resched:["Rescheduled","اتأجلت"], v_none:["None scheduled","مفيش زيارة"],
+vDate:["Date","التاريخ"], vTime:["Time","الوقت"], vDept:["Department","القسم"], vInst:["Instructions","التعليمات"], dept:["NICU family room","غرفة العائلة بالعناية المركزة"],
+inst:["Wash your hands for 20 seconds. Bring your ID. Skin-to-skin time depends on the team's advice on the day.","اغسلي إيديكي ٢٠ ثانية. هاتي بطاقتك. وقت الاحتضان الجلدي بيعتمد على نصيحة الفريق في اليوم ده."],
+vTl:["Visit timeline","جدول الزيارات"], vOld:["Original time","الموعد الأصلي"], vNew:["New time","الموعد الجديد"], noVisitD:["No visit is scheduled. The care team will tell you when the next one is set.","مفيش زيارة محددة. الفريق هيبلّغك لما الزيارة الجاية تتحدد."],
+mom:["Mother profile","بيانات الأم"], bb:["Baby profile","بيانات الطفل"], hosp:["Hospital information","معلومات المستشفى"], lang:["Language","اللغة"], sec:["Security","الأمان"], priv:["Privacy","الخصوصية"], help:["Help and support","المساعدة والدعم"], about:["About Qarira","عن قريرة"], logout:["Log out","تسجيل الخروج"],
+logoutQ:["Log out of Qarira?","تسجيل الخروج من قريرة؟"], logoutD:["You will need to verify again to come back.","هتحتاجي تتحققي تاني علشان ترجعي."], name:["Name","الاسم"], dob:["Date of birth","تاريخ الميلاد"], room:["Bed","السرير"], unit:["Unit","القسم"], nicu:["NICU","العناية المركزة"], bedNo:["Bed 7","سرير ٧"],
+secD:["Your session ends when you log out or after a period of inactivity. Access is limited to the person the hospital approved.","جلستك بتنتهي لما تسجلي خروج أو بعد فترة خمول. الدخول متاح للشخص اللي المستشفى وافقت عليه."],
+privD:["Qarira only shows information the hospital shares with you. Camera recording and sharing are off. This demo contains no real patient data.","قريرة بتعرض بس اللي المستشفى بتشاركه معاكي. تسجيل الكاميرا والمشاركة متوقفين. النسخة دي مفيهاش بيانات مرضى حقيقية."],
+helpD:["For anything urgent, speak to staff at the NICU or call the unit's number. This demo has no live support.","لأي حاجة مستعجلة، كلمي الفريق في العناية المركزة أو اتصلي برقم القسم. النسخة دي مفيهاش دعم مباشر."],
+aboutD:["Qarira helps mothers stay connected with babies in neonatal intensive care. This is an interactive demo with fictional data. It has not had a clinical, security or legal review.","قريرة بتساعد الأمهات يفضلوا على تواصل مع أطفالهم في العناية المركزة. دي نسخة تجريبية تفاعلية ببيانات وهمية ومعملهاش مراجعة طبية أو أمنية أو قانونية."],
+ver:["Demo version 0.1","النسخة التجريبية 0.1"],
+dSim:["Simulate events","محاكاة أحداث"], dHealth:["New health update","تحديث صحي جديد"], dNurse:["Nurse message","رسالة من الممرضة"], dFeed:["Feeding update","تحديث رضاعة"], dCamLost:["Camera interruption","انقطاع الكاميرا"], dCamBack:["Restore camera","إعادة الكاميرا"], dNotif:["New notification","إشعار جديد"], dAvail:["Nurse available","الممرضة متاحة"],
+dExpire:["Expire session","إنهاء الجلسة"], dOff:["Go offline","قطع الإنترنت"], dVisit:["Visit scenario","سيناريو الزيارة"], dReset:["Reset demo","إعادة ضبط التجربة"], dResetD:["This clears the demo data and sends you back to the start.","ده هيمسح بيانات التجربة ويرجعك للبداية."], dCam:["Camera state","حالة الكاميرا"], dDone:["Done","تم"],
+offB:["You're offline. Showing the last saved information.","مفيش إنترنت. بنعرض آخر معلومات اتحفظت."], backOn:["Back online.","الإنترنت رجع."], stillOff:["Still offline (demo).","لسه مفيش إنترنت (تجريبي)."], savedOk:["Saved","اتحفظ"],
+hello2:["Hello","أهلًا"], moreInfo:["Details","التفاصيل"],
+};
+/* notification titles/bodies and data are bilingual objects {en,ar} */
+const B=(en,ar)=>({en,ar});
+
+/* ---------- helpers ---------- */
+const LS="qarira.demo.v1";
+const loc=l=>l==="ar"?"ar-EG":"en-GB";
+const DAY=864e5, HR=36e5;
+function startOfDay(d){const x=new Date(d);x.setHours(0,0,0,0);return x.getTime();}
+function icon(n,s){const P={
+home:"M3 11l9-8 9 8M5 10v10h14V10",video:"M15 10l5-3v10l-5-3M3 6h12v12H3z",activity:"M22 12h-4l-3 9L9 3l-3 9H2",msg:"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z",
+bell:"M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4",user:"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8",
+cal:"M8 2v4M16 2v4M3 6h18v15H3zM3 10h18",chev:"M9 18l6-6-6-6",left:"M15 18l-6-6 6-6",plus:"M12 5v14M5 12h14",minus:"M5 12h14",
+moon:"M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z",expand:"M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7",shrink:"M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7",
+send:"M22 2L11 13M22 2l-7 20-4-9-9-4z",scale:"M6 3h12l3 18H3zM9 9h6",therm:"M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z",drop:"M12 2.7l5.7 5.7a8 8 0 1 1-11.4 0z",
+bottle:"M9 2h6v3l2 3v13a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8l2-3z",pill:"M10.5 20.5l-7-7a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7zM8.5 8.5l7 7",
+file:"M14 2H6a2 2 0 0 0-2 2v16h16V8zM14 2v6h6M8 13h8M8 17h8",shield:"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",globe:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20",
+help:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01",info:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 16v-4M12 8h.01",
+logout:"M9 21H5V3h4M16 17l5-5-5-5M21 12H9",check:"M20 6L9 17l-5-5",x:"M18 6L6 18M6 6l12 12",hosp:"M3 21h18M5 21V7l7-4 7 4v14M12 8v6M9 11h6",
+wifi:"M2 2l20 20M8.5 16.5a5 5 0 0 1 7 0M2 8.8a15 15 0 0 1 4.2-2.6M10.7 5.1A15 15 0 0 1 22 8.8M12 20h.01",sliders:"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6",
+refresh:"M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5",clock:"M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2",alert:"M12 9v4M12 17h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z",
+heart:"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8z",baby:"M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM9 11h.01M15 11h.01M9.5 15c1.5 1.2 3.5 1.2 5 0",eye:"M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"};
+return html`<svg className="ico" width=${s||22} height=${s||22} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d=${P[n]||""}/></svg>`;}
+function Icon({n,s}){return icon(n,s);}
+
+/* ---------- seed data (fictional) ---------- */
+function seed(){
+  const now=Date.now(), today=startOfDay(now);
+  const wob=[0,-9,6,-4,11,-7,3,8,-6,5,-10,9,2,-5,7,-3,10,-8,4,6,-4,8,-9,5,3,-6,9,-2,7,4];
+  const weights=[];for(let i=0;i<30;i++){weights.push({ts:today-(29-i)*DAY+6*HR,g:1480+i*19+wob[i]});}
+  const tv=[36.8,36.9,36.7,36.8,37.0,36.9,36.8,36.9], sv=[96,97,96,95,97,98,97,96];
+  const temps=tv.map((v,i)=>({ts:now-(7-i)*3*HR-12*60000,v}));
+  const sats=sv.map((v,i)=>({ts:now-(7-i)*3*HR-32*60000,v}));
+  const feeds=[
+   {ts:now-12*HR,type:"tube",ml:24,note:B("Tolerated well.","اتقبّلت كويس.")},
+   {ts:now-9*HR,type:"ebm",ml:26,note:B("Calm during the feed.","كانت هادية أثناء الرضعة.")},
+   {ts:now-6*HR,type:"ebm",ml:26,note:B("Burped twice.","طلّعت غازات مرتين.")},
+   {ts:now-3*HR,type:"formula",ml:28,note:B("Finished the full amount.","خلّصت الكمية كلها.")}];
+  const medsL=[
+   {name:B("Vitamin D drops","نقط فيتامين د"),dose:B("0.5 ml","٠٫٥ مل"),ts:now-5*HR,by:B("Nurse Mona (demo)","الممرضة منى (تجريبي)")},
+   {name:B("Iron supplement","مكمّل حديد"),dose:B("0.3 ml","٠٫٣ مل"),ts:now-1*DAY-4*HR,by:B("Nurse Hana (demo)","الممرضة هناء (تجريبي)")},
+   {name:B("Caffeine citrate","سيترات الكافيين"),dose:B("As charted","حسب الجدول"),ts:now-1*DAY-9*HR,by:B("Nurse Mona (demo)","الممرضة منى (تجريبي)")}];
+  const notesL=[
+   {ts:now-4*HR,author:B("Dr. Karim (demo)","د. كريم (تجريبي)"),text:B("Morning round: steady weight gain. Feeding plan continues as charted.","جولة الصباح: زيادة وزن مستقرة. خطة الرضاعة مستمرة زي الجدول.")},
+   {ts:now-1*DAY-3*HR,author:B("Dr. Karim (demo)","د. كريم (تجريبي)"),text:B("Reviewed overnight readings with the nursing team.","راجعنا قراءات الليل مع فريق التمريض.")},
+   {ts:now-3*DAY,author:B("Dr. Salma (demo)","د. سلمى (تجريبي)"),text:B("Family meeting arranged for this week.","اتحدد اجتماع مع الأسرة الأسبوع ده.")}];
+  const msgs=[
+   {id:1,from:"nurse",text:B("Good morning! Layla had a calm night.","صباح الخير! ليلى قضت ليلة هادية."),ts:now-5*HR,seen:true},
+   {id:2,from:"me",text:B("Thank you. Can I visit this evening?","شكرًا. ينفع أزورها الليلة؟"),ts:now-4.8*HR,status:"read"},
+   {id:3,from:"nurse",text:B("Yes. Please check the Visits tab for the time.","أيوه. بصّي على تاب الزيارات للمعاد."),ts:now-4.6*HR,seen:true}];
+  const notifs=[
+   {id:1,cat:"feeding",ts:now-3*HR,read:false,t:B("Feeding recorded","اتسجّلت رضعة"),b:B("A 28 ml formula feed was recorded.","اتسجّلت رضعة لبن صناعي ٢٨ مل."),to:"health:feeding"},
+   {id:2,cat:"nurse",ts:now-4.6*HR,read:false,t:B("New message from Nurse Mona","رسالة جديدة من الممرضة منى"),b:B("Please check the Visits tab for the time.","بصّي على تاب الزيارات للمعاد."),to:"messages"},
+   {id:3,cat:"visit",ts:now-6*HR,read:true,t:B("Visit tomorrow","زيارة بكرة"),b:B("Your visit is tomorrow at 4:00 PM.","زيارتك بكرة الساعة ٤:٠٠ العصر."),to:"visits"},
+   {id:4,cat:"announce",ts:now-1*DAY,read:true,t:B("Family room hours","مواعيد غرفة العائلة"),b:B("The family room is open from 10 AM to 8 PM.","غرفة العائلة مفتوحة من ١٠ الصبح لـ ٨ المسا."),to:"visits"},
+   {id:5,cat:"health",ts:now-1*DAY-3*HR,read:true,t:B("New weight recorded","اتسجّل وزن جديد"),b:B("Today's weight is in the weight chart.","وزن النهارده في الرسم البياني."),to:"health:weight"}];
+  return {lang:"en",onboarded:false,authed:false,expired:false,offline:false,cam:"live",camTries:0,nurseAvail:true,visit:"upcoming",
+   weights,temps,sats,feeds,meds:medsL,notes:notesL,msgs,notifs,nid:20,mid:20,lastUp:now-12*60000,prefs:{health:true,feeding:true,nurse:true,visit:true,announce:true,camera:true}};
+}
+function load(){try{const r=localStorage.getItem(LS);if(r){const o=JSON.parse(r);if(o&&o.weights)return o;}}catch(e){}return seed();}
+function save(s){try{localStorage.setItem(LS,JSON.stringify(s));}catch(e){}}
+
+/* ---------- ui parts ---------- */
+function Logo({size,word,lang}){const s=size||40;
+  return html`<span style=${{display:"inline-flex",alignItems:"center",gap:10}}>
+   <svg width=${s} height=${s} viewBox="0 0 64 64" role="img" aria-label="Qarira">
+    <rect width="64" height="64" rx="18" fill="#A0C9F5"/>
+    <path d="M32 54C16 44 10 34 14 25c3-6 11-7 16-1l2 2 2-2c5-6 13-5 16 1 4 9-2 19-18 29z" fill="#FAF7F3"/>
+    <path d="M18 33c2 8 8 13 14 17" fill="none" stroke="#6D524D" strokeWidth="3" strokeLinecap="round"/>
+    <circle cx="32" cy="30" r="6" fill="#F7AFC4"/><path d="M24 40c3-4 13-4 16 0" fill="none" stroke="#F7AFC4" strokeWidth="3" strokeLinecap="round"/>
+   </svg>
+   ${word!==false&&html`<span style=${{fontWeight:800,fontSize:s*0.62,color:"#6D524D",letterSpacing:lang==="ar"?0:"-.01em"}}>${lang==="ar"?"قريرة":"Qarira"}</span>`}</span>`;}
+function Sheet({open,onClose,title,children}){
+  useEffect(()=>{if(!open)return;const f=e=>{if(e.key==="Escape")onClose();};document.addEventListener("keydown",f);return()=>document.removeEventListener("keydown",f);},[open,onClose]);
+  if(!open)return null;
+  return html`<div className="back" onClick=${e=>{if(e.target===e.currentTarget)onClose();}}>
+   <div className="sheet" role="dialog" aria-modal="true" aria-label=${title}>
+    <div className="row" style=${{marginBottom:12}}><h2 className="h2 grow">${title}</h2>
+     <button className="iconbtn flat" onClick=${onClose} aria-label="Close"><${Icon} n="x"/></button></div>${children}</div></div>`;}
+function Toggle({on,onChange,label}){return html`<button role="switch" aria-checked=${on} aria-label=${label} className="switch" onClick=${()=>onChange(!on)}></button>`;}
+function Skeleton({h,w}){return html`<div className="skel" style=${{height:h||20,width:w||"100%"}} aria-hidden="true"></div>`;}
+function Empty({icon:i,text,children}){return html`<div className="empty"><${Icon} n=${i||"info"} s=${32}/><p>${text}</p>${children}</div>`;}
+
+/* ---------- chart ---------- */
+function Chart({pts,sel,onSel,dec,unit,label,fmtX,color}){
+  const W=340,H=190,L=46,R=14,T=14,Bt=28,n=pts.length;
+  const ys=pts.map(p=>p.y);let lo=Math.min(...ys),hi=Math.max(...ys);if(hi-lo<0.0001){lo-=1;hi+=1;}const pad=(hi-lo)*0.12;lo-=pad;hi+=pad;
+  const X=i=>n===1?L+(W-L-R)/2:L+(W-L-R)*i/(n-1), Y=v=>T+(H-T-Bt)*(1-(v-lo)/(hi-lo));
+  const line=pts.map((p,i)=>(i?"L":"M")+X(i).toFixed(1)+" "+Y(p.y).toFixed(1)).join(" ");
+  const area=line+" L"+X(n-1).toFixed(1)+" "+(H-Bt)+" L"+X(0).toFixed(1)+" "+(H-Bt)+" Z";
+  const ticks=[0,1,2,3].map(k=>lo+(hi-lo)*k/3);
+  const xi=n>2?[0,Math.floor((n-1)/2),n-1]:[...Array(n).keys()];
+  const c=color||"#568BCB";
+  return html`<svg className="chart" viewBox=${"0 0 "+W+" "+H} role="img" aria-label=${label}>
+   <defs><linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor=${c} stopOpacity=".28"/><stop offset="1" stopColor=${c} stopOpacity="0"/></linearGradient></defs>
+   ${ticks.map((t,k)=>html`<g key=${k}><line x1=${L} x2=${W-R} y1=${Y(t)} y2=${Y(t)} stroke="#EADFD6" strokeWidth="1"/><text x=${L-6} y=${Y(t)+3} textAnchor="end">${fmtY(t,dec)}</text></g>`)}
+   <path d=${area} fill="url(#ag)"/><path d=${line} fill="none" stroke=${c} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round"/>
+   ${sel!=null&&html`<line x1=${X(sel)} x2=${X(sel)} y1=${T} y2=${H-Bt} stroke="#F7AFC4" strokeWidth="2" strokeDasharray="4 3"/>`}
+   ${pts.map((p,i)=>html`<g key=${i} className="pt" tabIndex="0" role="button" aria-label=${p.aria} onClick=${()=>onSel(i)} onKeyDown=${e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();onSel(i);}}}>
+     <circle cx=${X(i)} cy=${Y(p.y)} r=${n>16?7:13} fill="transparent"/>
+     <circle cx=${X(i)} cy=${Y(p.y)} r=${i===sel?6:n>16?2.5:4} fill=${i===sel?"#F7AFC4":"#FFFFFF"} stroke=${i===sel?"#6D524D":c} strokeWidth="2"/></g>`)}
+   ${xi.map((i,k)=>html`<text key=${k} x=${X(i)} y=${H-8} textAnchor=${k===0&&n>2?"start":k===xi.length-1&&n>2?"end":"middle"}>${fmtX(pts[i])}</text>`)}
+  </svg>`;}
+let _fmtLang="en";
+function fmtY(v,dec){return new Intl.NumberFormat(loc(_fmtLang),{minimumFractionDigits:dec,maximumFractionDigits:dec}).format(v);}
+
+/* ---------- app ---------- */
+function App(){
+  const [st,setSt]=useState(load);
+  const [route,setRoute]=useState({n:"splash",p:null});
+  const [toasts,setToasts]=useState([]);
+  const [demoOpen,setDemoOpen]=useState(false);
+  const [chatTyping,setChatTyping]=useState(false);
+  const lang=st.lang; _fmtLang=lang;
+  const L=useCallback(o=>o?(o[lang]||o.en):"",[lang]);
+  const t=useCallback((k,v)=>{const e=S[k];let s=e?e[lang==="ar"?1:0]:k;if(v)for(const x in v)s=s.split("{"+x+"}").join(v[x]);return s;},[lang]);
+  const nf=useCallback((x,d)=>new Intl.NumberFormat(loc(lang),{minimumFractionDigits:d||0,maximumFractionDigits:d||0}).format(x),[lang]);
+  const fd=useCallback((ts,o)=>new Intl.DateTimeFormat(loc(lang),o||{day:"numeric",month:"short"}).format(ts),[lang]);
+  const ft=useCallback(ts=>new Intl.DateTimeFormat(loc(lang),{hour:"numeric",minute:"2-digit"}).format(ts),[lang]);
+  const rel=useCallback(ts=>{const d=ts-Date.now(),a=Math.abs(d),r=new Intl.RelativeTimeFormat(loc(lang),{numeric:"auto"});
+    if(a<6e4)return r.format(0,"second");if(a<HR)return r.format(Math.round(d/6e4),"minute");if(a<DAY)return r.format(Math.round(d/HR),"hour");return r.format(Math.round(d/DAY),"day");},[lang]);
+  const up=useCallback(p=>setSt(s=>{const n=typeof p==="function"?p(s):{...s,...p};save(n);return n;}),[]);
+  const toast=useCallback(m=>{const id=Math.random();setToasts(a=>[...a,{id,m}]);setTimeout(()=>setToasts(a=>a.filter(x=>x.id!==id)),3200);},[]);
+  const go=useCallback((to)=>{const [n,p]=String(to).split(":");setRoute({n,p:p||null});window.scrollTo(0,0);},[]);
+
+  // language from hash on first load
+  useEffect(()=>{try{const h=(location.hash||"").replace("#","");if(h==="ar"||h==="en")up({lang:h});}catch(e){}},[up]);
+  useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";},[lang]);
+  // splash
+  useEffect(()=>{if(route.n!=="splash")return;const id=setTimeout(()=>{setSt(s=>{go(s.authed?"home":s.onboarded?"login":"onboarding");return s;});},1600);return()=>clearTimeout(id);},[route.n,go]);
+  // real offline events
+  useEffect(()=>{const off=()=>up({offline:true}),on=()=>{up({offline:false});toast(t("backOn"));};window.addEventListener("offline",off);window.addEventListener("online",on);return()=>{window.removeEventListener("offline",off);window.removeEventListener("online",on);};},[up,toast,t]);
+
+  const unreadN=st.notifs.filter(n=>!n.read).length, unreadM=st.msgs.filter(m=>m.from==="nurse"&&!m.seen).length;
+  const push=(o)=>up(s=>{if(s.prefs[o.cat]===false)return {...s,nid:s.nid+1};const n={id:s.nid,ts:Date.now(),read:false,...o};return {...s,nid:s.nid+1,notifs:[n,...s.notifs]};});
+  const ctx={st,up,t,nf,fd,ft,rel,L,lang,go,route,toast,push,unreadN,unreadM,chatTyping,setChatTyping,setDemoOpen};
+  const authed=st.authed;
+  const inApp=authed&&!["splash","onboarding","login"].includes(route.n);
+
+  let page;
+  switch(route.n){
+    case "splash":page=html`<${Splash}/>`;break;
+    case "onboarding":page=html`<${Onboarding}/>`;break;
+    case "login":page=html`<${Login}/>`;break;
+    default:page=authed?html`<${Shell}/>`:html`<${Login}/>`;
+  }
+  return html`<${Ctx.Provider} value=${ctx}>
+    <div lang=${lang} dir=${lang==="ar"?"rtl":"ltr"}>${page}
+     ${inApp&&html`<button className="demofab" onClick=${()=>setDemoOpen(true)}><${Icon} n="sliders" s=${18}/>${t("demo")}</button>`}
+     <${DemoPanel} open=${demoOpen} onClose=${()=>setDemoOpen(false)}/>
+     <div className="toasts" aria-live="polite">${toasts.map(x=>html`<div key=${x.id} className="toast">${x.m}</div>`)}</div></div><//>`;
+}
+
+function Splash(){const {lang,t}=useContext(Ctx);
+  return html`<div className="center fade"><${Logo} size=${96} lang=${lang} word=${false}/><div><h1 style=${{fontSize:"2.4rem",fontWeight:800,color:"var(--brown)"}}>${t("app")}</h1><p className="sub">${t("tagline")}</p></div><div className="splash-bar" role="progressbar" aria-label="Loading"><i></i></div></div>`;}
+
+function LangBtn(){const {st,up,lang}=useContext(Ctx);return html`<button className="langbtn" onClick=${()=>up({lang:lang==="en"?"ar":"en"})} aria-label=${lang==="en"?"العربية":"English"}>${lang==="en"?"العربية":"English"}</button>`;}
+
+function Onboarding(){const {t,up,go,lang}=useContext(Ctx);const [i,setI]=useState(0);
+  const sl=[{k:"ob1",c:"#E4EFFC",ic:"video"},{k:"ob2",c:"#FDE9F0",ic:"activity"},{k:"ob3",c:"#FADBC4",ic:"msg"}];const s=sl[i];
+  const finish=()=>{up({onboarded:true});go("login");};
+  return html`<div className="ob fade"><div className="row"><${Logo} size=${34} lang=${lang}/><span className="grow"></span><${LangBtn}/>${i<2&&html`<button className="btn ghost" onClick=${finish}>${t("skip")}</button>`}</div>
+   <div className="art"><div style=${{width:"min(280px,70vw)",aspectRatio:"1",borderRadius:"50%",background:s.c,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}} aria-hidden="true">
+     <div style=${{width:"58%",aspectRatio:"1",borderRadius:"42%",background:"var(--surface)",display:"flex",alignItems:"center",justifyContent:"center",color:"var(--medblue)",boxShadow:"var(--sh)"}}><${Icon} n=${s.ic} s=${64}/></div>
+     <div style=${{position:"absolute",top:"10%",insetInlineEnd:"8%",color:"#F7AFC4"}}><${Icon} n="heart" s=${34}/></div></div></div>
+   <div className="stack" style=${{textAlign:"center"}} key=${i}><div className="stack fade" style=${{gap:8}}><h1 style=${{fontSize:"1.7rem",fontWeight:800}}>${t(s.k+"t")}</h1><p className="sub" style=${{fontSize:"1.02rem"}}>${t(s.k+"d")}</p></div>
+    <div className="dots" role="img" aria-label=${t("obStep",{a:i+1,b:3})}>${sl.map((_,k)=>html`<i key=${k} className=${k===i?"on":""}></i>`)}</div>
+    <div className="row">${i>0?html`<button className="btn sec" onClick=${()=>setI(i-1)}>${t("prev")}</button>`:html`<span style=${{flex:1}}></span>`}
+     <button className="btn grow" onClick=${()=>i<2?setI(i+1):finish()}>${i<2?t("next"):t("start")}</button></div></div></div>`;}
+
+function Fld({k,label,err,children}){return html`<div className="field"><label htmlFor=${"f-"+k}>${label}</label>${children}${err&&html`<div className="errmsg" id=${"e-"+k}><${Icon} n="alert" s=${16}/>${err}</div>`}</div>`;}
+function Login(){const {t,st,up,go,lang,toast}=useContext(Ctx);
+  const [f,setF]=useState({h:"",code:"",name:"",dob:""});const [err,setErr]=useState({});const [busy,setBusy]=useState(false);const [top,setTop]=useState(null);
+  const set=k=>e=>setF({...f,[k]:e.target.value});
+  const check=(v)=>{const e={};["h","code","name","dob"].forEach(k=>{if(!String(v[k]).trim())e[k]=t("eReq");});return e;};
+  const run=(v)=>{const e=check(v);setErr(e);setTop(null);if(Object.keys(e).length)return;setBusy(true);
+    setTimeout(()=>{setBusy(false);
+      if(v.h==="other"){setTop({k:"err",m:t("eOth")});return;}
+      const code=v.code.trim().toUpperCase();
+      if(code==="QRR-OLD-2025"){setTop({k:"warn",m:t("eExp")});return;}
+      const nm=v.name.trim().toLowerCase();
+      if(code==="QRR-DEMO-2026"&&(nm==="layla mahmoud"||nm==="ليلى محمود")&&v.dob==="2026-09-24"){setTop({k:"ok",m:t("okV")});up({authed:true,expired:false});setTimeout(()=>go("home"),700);return;}
+      setTop({k:"err",m:t("eInv")});},1100);};
+  const demo=()=>{const v={h:"demo",code:"QRR-DEMO-2026",name:lang==="ar"?"ليلى محمود":"Layla Mahmoud",dob:"2026-09-24"};setF(v);run(v);};
+  return html`<div className="login fade"><div className="row" style=${{marginBottom:24}}><${Logo} size=${40} lang=${lang}/><span className="grow"></span><${LangBtn}/></div>
+   <div className="stack"><div><h1 style=${{fontSize:"1.7rem",fontWeight:800}}>${t("lgT")}</h1><p className="sub">${t("lgD")}</p></div>
+   ${st.expired&&html`<div className="alert warn" role="alert"><${Icon} n="clock" s=${20}/>${t("sessExp")}</div>`}
+   ${top&&html`<div className=${"alert "+top.k} role="alert"><${Icon} n=${top.k==="ok"?"check":"alert"} s=${20}/>${top.m}</div>`}
+   <form className="stack" onSubmit=${e=>{e.preventDefault();run(f);}} noValidate>
+    <${Fld} k="h" err=${err.h} label=${t("hospital")}><select id="f-h" className=${"inp"+(err.h?" bad":"")} value=${f.h} onChange=${set("h")} aria-invalid=${!!err.h} disabled=${busy}><option value="">${t("selH")}</option><option value="demo">${t("hDemo")}</option><option value="other">${t("hOther")}</option></select><//>
+    <${Fld} k="code" err=${err.code} label=${t("code")}><input id="f-code" className=${"inp"+(err.code?" bad":"")} value=${f.code} onChange=${set("code")} autoComplete="off" autoCapitalize="characters" placeholder="QRR-XXXX-0000" aria-invalid=${!!err.code} disabled=${busy} dir="ltr" style=${{textAlign:lang==="ar"?"right":"left"}}/><//>
+    <${Fld} k="name" err=${err.name} label=${t("bname")}><input id="f-name" className=${"inp"+(err.name?" bad":"")} value=${f.name} onChange=${set("name")} autoComplete="off" aria-invalid=${!!err.name} disabled=${busy}/><//>
+    <${Fld} k="dob" err=${err.dob} label=${t("bdob")}><input id="f-dob" type="date" className=${"inp"+(err.dob?" bad":"")} value=${f.dob} onChange=${set("dob")} aria-invalid=${!!err.dob} disabled=${busy} max="2026-12-31"/><//>
+    <button className="btn block" type="submit" disabled=${busy}>${busy?html`<${Icon} n="refresh" s=${20}/>${t("verifying")}`:t("verify")}</button>
+    <button className="btn sec block" type="button" onClick=${demo} disabled=${busy}>${t("useDemo")}</button></form>
+   <div className="alert info"><${Icon} n="info" s=${20}/><span>${t("demoHint")}</span></div><p className="small">${t("secNote")}</p></div></div>`;}
+
+/* ---------- shell ---------- */
+const NAV=[["home","nHome","home"],["camera","nCam","video"],["health","nHealth","activity"],["messages","nMsg","msg"]];
+const TOP={home:"home",camera:"camera",health:"health",messages:"messages",notifs:"home",visits:"home",profile:"home",settings:"profile"};
+function Shell(){const {t,st,up,route,go,unreadN,unreadM,lang,toast,rel}=useContext(Ctx);
+  const [loadingH,setLoadingH]=useState(false);
+  const n=route.n; const active=["home","camera","health","messages"].includes(n)?n:null;
+  const titles={home:t("app"),camera:t("liveCam"),health:t("nHealth"),messages:t("nurseChat"),notifs:t("nNotif"),visits:t("nVisit"),profile:t("nProf"),sub:t("nProf")};
+  const isSub=!["home","camera","health","messages"].includes(n)||(n==="health"&&route.p);
+  const backTo=()=>{if(n==="health"&&route.p)go("health");else if(n==="sub")go("profile");else go("home");};
+  let page;
+  switch(n){case "home":page=html`<${Home}/>`;break;case "camera":page=html`<${Camera}/>`;break;case "health":page=html`<${Health}/>`;break;case "messages":page=html`<${Messages}/>`;break;
+   case "notifs":page=html`<${Notifs}/>`;break;case "visits":page=html`<${Visits}/>`;break;case "profile":page=html`<${Profile}/>`;break;case "sub":page=html`<${SubPage}/>`;break;default:page=html`<${Home}/>`;}
+  let title=titles[n]||t("app"); if(n==="health"&&route.p)title=t(route.p==="weight"?"weight":route.p==="temp"?"temp":route.p==="spo2"?"spo2":route.p==="feeding"?"feeding":route.p==="meds"?"meds":"notes");
+  return html`<div className="shell">
+   <nav className="nav" aria-label="Main"><div className="brand"><${Logo} size=${36} lang=${lang}/></div>
+    ${NAV.map(([k,l,i])=>html`<button key=${k} onClick=${()=>go(k)} aria-current=${active===k?"page":undefined}><${Icon} n=${i} s=${24}/><span>${t(l)}</span>${k==="messages"&&unreadM>0&&html`<span className="badge-n" aria-label=${unreadM+" unread"}>${unreadM}</span>`}</button>`)}
+    </nav>
+   <main className="main"><header className="hdr">
+     ${isSub?html`<button className="iconbtn" onClick=${backTo} aria-label=${t("back")}><span className="flip"><${Icon} n="left"/></span></button>`:html`<span className="hide-d"><${Logo} size=${34} word=${false} lang=${lang}/></span>`}
+     <h1 className="grow">${title}</h1><span className="demo-pill"><${Icon} n="sliders" s=${14}/>${t("demo")}</span>
+     <${LangBtn}/><button className="iconbtn" onClick=${()=>go("notifs")} aria-label=${t("nNotif")+(unreadN?" ("+unreadN+")":"")}><${Icon} n="bell"/>${unreadN>0&&html`<span className="badge-n">${unreadN}</span>`}</button>
+     <button className="iconbtn" onClick=${()=>go("profile")} aria-label=${t("nProf")}><${Icon} n="user"/></button></header>
+    ${st.offline&&html`<${OfflineBanner}/>`}
+    <div className="fade" key=${n+(route.p||"")}>${page}</div></main></div>`;}
+
+function OfflineBanner(){const {t,up,toast}=useContext(Ctx);const [b,setB]=useState(false);
+  const retry=()=>{setB(true);setTimeout(()=>{setB(false);up({offline:false});toast(t("backOn"));},1300);};
+  return html`<div className="alert warn offline" role="status" style=${{boxShadow:"var(--sh)"}}><${Icon} n="wifi" s=${20}/><span className="grow">${t("offB")}</span><button className="btn sm" onClick=${retry} disabled=${b}>${b?t("retrying"):t("retry")}</button></div>`;}
+
+/* ---------- home ---------- */
+const NAME={mom:B("Sara Mahmoud","سارة محمود"),baby:B("Layla Mahmoud","ليلى محمود"),hosp:B("Demo Hospital (fictional)","مستشفى تجريبي (وهمي)"),nurse:B("Nurse Mona (demo)","الممرضة منى (تجريبي)")};
+function visitInfo(st){const now=Date.now(),tm=startOfDay(now+DAY)+16*HR,today=startOfDay(now);
+  switch(st.visit){
+   case "completed":return {status:"completed",next:null,when:today+11*HR,old:null,past:[{ts:today+11*HR,s:"completed"},{ts:now-3*DAY,s:"completed"}]};
+   case "resched":return {status:"resched",next:tm+DAY,when:tm+DAY,old:tm,past:[{ts:now-3*DAY,s:"completed"}]};
+   case "none":return {status:"none",next:null,when:null,old:null,past:[{ts:now-3*DAY,s:"completed"}]};
+   default:return {status:"upcoming",next:tm,when:tm,old:null,past:[{ts:now-3*DAY,s:"completed"}]};}}
+function Home(){const {t,st,go,L,nf,fd,ft,rel,unreadM,up}=useContext(Ctx);
+  const days=Math.max(0,Math.floor((Date.now()-new Date("2026-09-24T00:00:00").getTime())/DAY));
+  const v=visitInfo(st), lt=st.temps[st.temps.length-1], ls=st.sats[st.sats.length-1], lw=st.weights[st.weights.length-1];
+  const camOk=st.cam==="live"||st.cam==="sleeping";
+  const q=[["camera","liveCam","video","",camOk?t("camOk"):t("camNo"),camOk?"ok":"warn"],["health","nHealth","activity","pink",t("updated",{t:rel(st.lastUp)}),""],["messages","nurseChat","msg","peach",unreadM?unreadM+" ●":"",""],["visits","nextVisit","cal","",v.next?fd(v.next,{weekday:"short",day:"numeric",month:"short"})+" · "+ft(v.next):t("noVisit"),""]];
+  return html`<div className="stack">
+   <div><h2 style=${{fontSize:"1.6rem",fontWeight:800}}>${t("hello",{n:L(NAME.mom).split(" ")[0]})}</h2><p className="sub">${t("helloSub",{b:L(NAME.baby).split(" ")[0]})}</p></div>
+   <div className="card" style=${{background:"linear-gradient(135deg,#E4EFFC,#FDE9F0)"}}><div className="row"><div className="tile pink" style=${{width:56,height:56,borderRadius:20}}><${Icon} n="baby" s=${30}/></div>
+     <div className="grow"><h3 className="h2">${L(NAME.baby)}</h3><p className="sub">${t("dayOf",{n:nf(days+1)})} · ${t("nicu")}, ${t("bedNo")}</p></div></div>
+     <div className="row" style=${{marginTop:12}}><${Icon} n="hosp" s=${18}/><span className="small" style=${{color:"var(--ink)"}}>${L(NAME.hosp)}</span></div></div>
+   <div className="grid2">${q.map(([to,l,i,c,s,k])=>html`<button key=${to} className="card tap" onClick=${()=>go(to)} style=${{position:"relative"}}>
+      <div className=${"tile "+c}><${Icon} n=${i}/></div><div className="h2" style=${{marginTop:10}}>${t(l)}</div>
+      ${k?html`<span className=${"chip "+k} style=${{marginTop:6}}>${k==="ok"&&html`<${Icon} n="check" s=${14}/>`}${k==="warn"&&html`<${Icon} n="alert" s=${14}/>`}${s}</span>`:html`<div className="small" style=${{marginTop:4}}>${s}</div>`}</button>`)}</div>
+   <button className="card tap" onClick=${()=>go("health")}><div className="row"><div className="grow"><div className="h2">${t("latestUp")}</div><div className="small">${t("updated",{t:rel(st.lastUp)})} · ${t("demoData")}</div></div><span className="flip"><${Icon} n="chev"/></span></div>
+    <div className="grid2" style=${{marginTop:12,gridTemplateColumns:"repeat(3,1fr)"}}>
+     <div><div className="small">${t("weight")}</div><div className="num" style=${{fontWeight:800,fontSize:"1.15rem"}}>${nf(lw.g)} ${t("g")}</div></div>
+     <div><div className="small">${t("temp")}</div><div className="num" style=${{fontWeight:800,fontSize:"1.15rem"}}>${nf(lt.v,1)} ${t("c")}</div></div>
+     <div><div className="small">${t("spo2")}</div><div className="num" style=${{fontWeight:800,fontSize:"1.15rem"}}>${nf(ls.v)}${t("pct")}</div></div></div></button>
+   <button className="card tap" onClick=${()=>go("messages")}><div className="row"><div className="tile peach"><${Icon} n="user"/></div><div className="grow"><div className="small">${t("nurse")}</div><div className="h2">${L(NAME.nurse)}</div></div>
+     <span className=${"chip "+(st.nurseAvail?"ok":"warn")}>${st.nurseAvail?t("avail"):t("away")}</span></div></button>
+   <div className="card"><div className="row"><h3 className="h2 grow">${t("recent")}</h3><button className="btn ghost sm" onClick=${()=>go("notifs")}>${t("seeAll")}</button></div>
+    ${st.notifs.length?html`<div className="list">${st.notifs.slice(0,3).map(n=>html`<${NotifRow} key=${n.id} n=${n}/>`)}</div>`:html`<${Empty} icon="bell" text=${t("caught")}/>`}</div></div>`;}
+
+function catIcon(c){return {health:"activity",feeding:"bottle",nurse:"msg",visit:"cal",announce:"hosp",camera:"video"}[c]||"bell";}
+function NotifRow({n,onOpen}){const {t,L,rel,up,go}=useContext(Ctx);
+  const open=()=>{up(s=>({...s,notifs:s.notifs.map(x=>x.id===n.id?{...x,read:true}:x)}));if(onOpen)onOpen(n);else go(n.to);};
+  return html`<button className="li" style=${{width:"100%"}} onClick=${open}><div className="tile" style=${{width:38,height:38,borderRadius:12}}><${Icon} n=${catIcon(n.cat)} s=${18}/></div>
+   <div className="grow"><div style=${{fontWeight:n.read?600:800}}>${L(n.t)}</div><div className="small">${L(n.b)}</div><div className="small">${rel(n.ts)}</div></div>${!n.read&&html`<span className="dot" aria-label=${t("n_unread")}></span>`}</button>`;}
+
+/* ---------- camera ---------- */
+function Scene({sleep,night}){return html`<svg viewBox="0 0 320 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+  <defs><linearGradient id="wall" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor=${sleep?"#3A2E3A":"#5B4A57"}/><stop offset="1" stopColor=${sleep?"#241B24":"#3A2F3A"}/></linearGradient></defs>
+  <rect width="320" height="200" fill="url(#wall)"/><rect y="150" width="320" height="50" fill="#2B2128"/>
+  <g stroke="#B9A9B4" strokeWidth="3" opacity=".55">${[40,80,120,160,200,240,280].map(x=>html`<line key=${x} x1=${x} y1="70" x2=${x} y2="160"/>`)}<line x1="30" y1="70" x2="290" y2="70" strokeWidth="5"/><line x1="30" y1="160" x2="290" y2="160" strokeWidth="5"/></g>
+  <rect x="50" y="120" width="220" height="42" rx="14" fill="#6E5A6A"/>
+  <g className="breath"><rect x="62" y="104" width="196" height="50" rx="22" fill="#F7AFC4" opacity=".9"/><circle cx="130" cy="108" r="22" fill="#FADBC4"/>
+   <path d=${sleep?"M122 108q4 3 8 0M138 108q4 3 8 0":"M122 106h.01M140 106h.01"} stroke="#6D524D" strokeWidth="2.4" fill="none" strokeLinecap="round"/><path d="M120 94q10-12 22 0" stroke="#6D524D" strokeWidth="2" fill="none" opacity=".4"/></g>
+  <g className="sway" opacity=".7"><line x1="160" y1="0" x2="160" y2="38" stroke="#B9A9B4" strokeWidth="2"/><circle cx="160" cy="46" r="8" fill="#A0C9F5"/><circle cx="140" cy="54" r="6" fill="#F7AFC4"/><circle cx="180" cy="54" r="6" fill="#FADBC4"/></g></svg>`;}
+const CAMS=["live","sleeping","exam","paused","lost","unavail"];
+function Camera(){const {t,st,up,toast,ft}=useContext(Ctx);
+  const [zoom,setZoom]=useState(1);const [night,setNight]=useState(false);const [fs,setFs]=useState(false);const [busy,setBusy]=useState(false);const [now,setNow]=useState(Date.now());
+  useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),1000);return()=>clearInterval(id);},[]);
+  useEffect(()=>{if(!fs)return;const f=e=>{if(e.key==="Escape")setFs(false);};document.addEventListener("keydown",f);return()=>document.removeEventListener("keydown",f);},[fs]);
+  const s=st.cam, playing=s==="live"||s==="sleeping";
+  const retry=()=>{if(busy)return;setBusy(true);setTimeout(()=>{setBusy(false);
+    if(s==="lost"){const k=st.camTries+1;if(k>=2){up({cam:"live",camTries:0});toast(t("retryOk"));}else{up({camTries:k});toast(t("retryFail"));}}
+    else toast(t("stillNo"));},1400);};
+  const msgFor={exam:["cm_exam","eye"],paused:["cm_paused","clock"],lost:["cm_lost","wifi"],unavail:["cm_unavail","alert"]};
+  return html`<div className="stack">
+   <div className=${"cam"+(fs?" fs":"")} role="region" aria-label=${t("liveCam")}>
+    ${playing?html`<div className="feed" style=${{transform:"scale("+zoom+")",filter:night?"grayscale(1) sepia(1) hue-rotate(60deg) saturate(2.2) brightness(1.15)":"none"}}><${Scene} sleep=${s==="sleeping"}/></div>`
+      :html`<div className="msg"><${Icon} n=${msgFor[s][1]} s=${44}/><h2 className="h2">${t("cs_"+s)}</h2><p style=${{maxWidth:340,opacity:.9}}>${t(msgFor[s][0])}</p>
+        ${(s==="lost"||s==="unavail")&&html`<button className="btn" onClick=${retry} disabled=${busy}>${busy?t("retrying"):(s==="lost"?t("retry"):t("checkAgain"))}</button>`}</div>`}
+    <div className="ov"><div className="row" style=${{justifyContent:"space-between",alignItems:"flex-start"}}>
+      <span className=${"livepill"+(playing?"":" off")}><b></b>${playing?t("cs_live"):t("cs_"+s)}</span><span className="demotag">${t("footage")}</span></div>
+     <div className="row" style=${{justifyContent:"space-between",alignItems:"flex-end"}}><span className="livepill num">${ft(now)}</span>
+      <div className="camctl"><button className="iconbtn" onClick=${()=>setZoom(Math.max(1,+(zoom-.5).toFixed(1)))} disabled=${!playing||zoom<=1} aria-label=${t("zout")}><${Icon} n="minus"/></button>
+       <button className="iconbtn" onClick=${()=>setZoom(Math.min(3,+(zoom+.5).toFixed(1)))} disabled=${!playing||zoom>=3} aria-label=${t("zin")}><${Icon} n="plus"/></button>
+       <button className="iconbtn" onClick=${()=>setNight(!night)} disabled=${!playing} aria-pressed=${night} aria-label=${t("night")} style=${night?{background:"#A0C9F5",color:"#16304F"}:null}><${Icon} n="moon"/></button>
+       <button className="iconbtn" onClick=${()=>setFs(!fs)} aria-label=${fs?t("fsOff"):t("fsOn")}><${Icon} n=${fs?"shrink":"expand"}/></button></div></div></div></div>
+   <div className="row wrap"><span className=${"chip "+(s==="lost"?"err":"ok")}><${Icon} n=${s==="lost"?"wifi":"check"} s=${14}/>${s==="lost"?t("connNo"):t("connOk")}</span>
+    <span className=${"chip "+(playing?"ok":"warn")}>${playing?t("camOk"):t("camNo")}</span><span className="chip">${t("zoomLv",{z:zoom})}</span></div>
+   <div className="alert info"><${Icon} n="shield" s=${20}/>${t("camPriv")}</div>
+   <div className="card"><h3 className="h2" style=${{marginBottom:10}}>${t("demoCtl")}</h3><div className="tabs" role="group" aria-label=${t("dCam")}>
+     ${CAMS.map(c=>html`<button key=${c} className="tab" aria-pressed=${s===c} onClick=${()=>{up({cam:c,camTries:0});setZoom(1);}}>${t("cs_"+c)}</button>`)}</div></div></div>`;}
+
+/* ---------- health ---------- */
+function Health(){const {route,st,go,t,nf,rel,ft,L,fd}=useContext(Ctx);
+  const [ld,setLd]=useState(true);useEffect(()=>{setLd(true);const id=setTimeout(()=>setLd(false),550);return()=>clearTimeout(id);},[route.p]);
+  if(ld)return html`<div className="stack" aria-busy="true"><${Skeleton} h=${110}/><div className="grid2"><${Skeleton} h=${120}/><${Skeleton} h=${120}/><${Skeleton} h=${120}/><${Skeleton} h=${120}/></div></div>`;
+  if(route.p)return html`<${HealthDetail} k=${route.p}/>`;
+  const lw=st.weights[st.weights.length-1],lt=st.temps[st.temps.length-1],ls=st.sats[st.sats.length-1],lf=st.feeds[st.feeds.length-1],lm=st.meds[0],ln=st.notes[0];
+  const C=[["weight","scale",nf(lw.g)+" "+t("g"),t("measured",{t:fd(lw.ts)}),""],["temp","therm",nf(lt.v,1)+" "+t("c"),t("measured",{t:ft(lt.ts)}),"pink"],["spo2","drop",nf(ls.v)+t("pct"),t("measured",{t:ft(ls.ts)}),""],
+   ["feeding","bottle",nf(lf.ml)+" "+t("ml"),t("f_"+lf.type)+" · "+ft(lf.ts),"peach"],["meds","pill",L(lm.name),t("givenAt",{t:ft(lm.ts)}),"pink"],["notes","file",L(ln.author),rel(ln.ts),""]];
+  return html`<div className="stack"><div className="row wrap"><span className="chip">${t("updated",{t:rel(st.lastUp)})}</span><span className="chip pink">${t("demoData")}</span></div>
+   <div className="grid2">${C.map(([k,i,v,s,c])=>html`<button key=${k} className="card tap" onClick=${()=>go("health:"+k)}><div className=${"tile "+c}><${Icon} n=${i}/></div><div className="small" style=${{marginTop:10}}>${t(k)}</div><div className="num" style=${{fontWeight:800,fontSize:"1.15rem",overflowWrap:"anywhere"}}>${v}</div><div className="small">${s}</div></button>`)}</div>
+   <div className="row card"><${Icon} n="user" s=${20}/><span className="grow"><span className="small">${t("nurse")}</span><br/><b>${L(NAME.nurse)}</b></span></div>
+   <div className="alert info"><${Icon} n="info" s=${20}/>${t("noInterp")}</div></div>`;}
+
+function HealthDetail({k}){const {st,t,nf,fd,ft,L,toast,go}=useContext(Ctx);
+  const [rg,setRg]=useState(14);const [sel,setSel]=useState(null);const [rep,setRep]=useState(false);
+  useEffect(()=>setSel(null),[rg,k]);
+  const tag=html`<div className="chip pink" style=${{alignSelf:"flex-start"}}>${t("demoData")}</div>`;
+  if(k==="weight"){const all=st.weights.slice(-rg);const pts=all.map(w=>({y:w.g,ts:w.ts,aria:fd(w.ts)+": "+nf(w.g)+" "+t("g")}));const i=sel==null?pts.length-1:sel;const cur=all[i],prev=st.weights[st.weights.length-all.length+i-1];
+    const diff=prev?cur.g-prev.g:null;const today=startOfDay(Date.now())===startOfDay(cur.ts)||i===pts.length-1&&sel==null;
+    return html`<div className="stack">${tag}
+     <div className="tabs" role="tablist" aria-label=${t("weight")}>${[7,14,30].map(r=>html`<button key=${r} role="tab" aria-selected=${rg===r} className="tab" onClick=${()=>setRg(r)}>${t("nDays",{n:nf(r)})}</button>`)}</div>
+     <div className="card"><div className="small">${fd(cur.ts,{weekday:"long",day:"numeric",month:"long"})}</div><div className="val num">${nf(cur.g)} <span style=${{fontSize:"1rem"}}>${t("g")}</span></div>
+      ${diff!=null&&html`<div className="small num">${t("chg")}: ${diff>=0?"+":"−"}${nf(Math.abs(diff))} ${t("g")}</div>`}
+      <${Chart} pts=${pts} sel=${i} onSel=${setSel} dec=${0} unit="g" label=${t("weight")+" "+t("nDays",{n:nf(rg)})} fmtX=${p=>fd(p.ts)}/>
+      <input type="range" min="0" max=${pts.length-1} value=${i} onChange=${e=>setSel(+e.target.value)} aria-label=${t("tapPt")}/><p className="small">${t("tapPt")}</p></div>
+     <button className="btn block" onClick=${()=>setRep(true)}><${Icon} n="file" s=${20}/>${t("daily")}</button>
+     <${Sheet} open=${rep} onClose=${()=>setRep(false)} title=${t("daily")+" · "+fd(cur.ts)}>
+      <div className="stack"><div className="chip pink" style=${{alignSelf:"flex-start"}}>${t("demoData")}</div>
+       <div className="row"><div className="tile"><${Icon} n="scale"/></div><div><div className="small">${t("weight")}</div><div className="h2 num">${nf(cur.g)} ${t("g")}${diff!=null?"  ("+(diff>=0?"+":"−")+nf(Math.abs(diff))+")":""}</div></div></div>
+       ${i===pts.length-1?html`<div className="row"><div className="tile pink"><${Icon} n="therm"/></div><div><div className="small">${t("temp")}</div><div className="h2 num">${nf(st.temps[st.temps.length-1].v,1)} ${t("c")}</div></div></div>
+        <div className="row"><div className="tile"><${Icon} n="drop"/></div><div><div className="small">${t("spo2")}</div><div className="h2 num">${nf(st.sats[st.sats.length-1].v)}${t("pct")}</div></div></div>
+        <div className="row"><div className="tile peach"><${Icon} n="bottle"/></div><div><div className="small">${t("feeding")}</div><div className="h2 num">${nf(st.feeds.length)} · ${nf(st.feeds.reduce((a,f)=>a+f.ml,0))} ${t("ml")}</div></div></div>`:html`<div className="alert info"><${Icon} n="info" s=${20}/>${t("onlyW")}</div>`}
+       <p className="small">${t("noInterp")}</p></div><//></div>`;}
+  if(k==="temp"||k==="spo2"){const arr=k==="temp"?st.temps:st.sats;const dec=k==="temp"?1:0,u=k==="temp"?t("c"):t("pct");
+    const pts=arr.map(r=>({y:r.v,ts:r.ts,aria:ft(r.ts)+": "+nf(r.v,dec)+" "+u}));const i=sel==null?pts.length-1:sel;const cur=arr[i];
+    return html`<div className="stack">${tag}<div className="card"><div className="small">${t("measured",{t:fd(cur.ts)+" · "+ft(cur.ts)})}</div><div className="val num">${nf(cur.v,dec)} <span style=${{fontSize:"1rem"}}>${u}</span></div>
+     <${Chart} pts=${pts} sel=${i} onSel=${setSel} dec=${dec} label=${t(k)} fmtX=${p=>ft(p.ts)} color=${k==="temp"?"#D9779A":"#568BCB"}/>
+     <input type="range" min="0" max=${pts.length-1} value=${i} onChange=${e=>setSel(+e.target.value)} aria-label=${t("tapPt")}/></div>
+     <div className="card"><h3 className="h2">${t("readings")}</h3><div className="list">${[...arr].reverse().map((r,j)=>html`<div className="li" key=${j}><div className="grow">${fd(r.ts)} · ${ft(r.ts)}</div><b className="num">${nf(r.v,dec)} ${u}</b></div>`)}</div></div>
+     <div className="alert info"><${Icon} n="info" s=${20}/>${t("noInterp")}</div></div>`;}
+  if(k==="feeding"){return html`<div className="stack">${tag}${st.feeds.length?html`<div className="card"><div className="list">${[...st.feeds].reverse().map((f,j)=>html`<div className="li" key=${j}><div className="tile peach" style=${{width:38,height:38,borderRadius:12}}><${Icon} n="bottle" s=${18}/></div>
+     <div className="grow"><div style=${{fontWeight:700}}>${t("f_"+f.type)}</div><div className="small">${fd(f.ts)} · ${ft(f.ts)}</div><div className="small">${t("nNote")}: ${L(f.note)}</div></div><b className="num">${nf(f.ml)} ${t("ml")}</b></div>`)}</div></div>`:html`<${Empty} icon="bottle" text=${t("emptyD")}/>`}</div>`;}
+  if(k==="meds"){return html`<div className="stack">${tag}<div className="card"><div className="list">${st.meds.map((m,j)=>html`<div className="li" key=${j}><div className="tile pink" style=${{width:38,height:38,borderRadius:12}}><${Icon} n="pill" s=${18}/></div>
+     <div className="grow"><div style=${{fontWeight:700}}>${L(m.name)}</div><div className="small">${t("dose")}: ${L(m.dose)}</div><div className="small">${t("givenAt",{t:fd(m.ts)+" · "+ft(m.ts)})} · ${t("by",{n:L(m.by)})}</div></div></div>`)}</div></div></div>`;}
+  return html`<div className="stack">${tag}<div className="card tl">${st.notes.map((n,j)=>html`<div className=${"ev"+(j===0?" next":" done")} key=${j}><div className="small">${fd(n.ts,{day:"numeric",month:"long"})} · ${ft(n.ts)}</div><div style=${{fontWeight:700}}>${L(n.author)}</div><p>${L(n.text)}</p></div>`)}</div></div>`;}
+
+/* ---------- messages ---------- */
+function Messages(){const {st,up,t,L,ft,toast,push,chatTyping,setChatTyping}=useContext(Ctx);
+  const [txt,setTxt]=useState("");const end=useRef(null);
+  useEffect(()=>{up(s=>s.msgs.some(m=>m.from==="nurse"&&!m.seen)?{...s,msgs:s.msgs.map(m=>m.from==="nurse"?{...m,seen:true}:m)}:s);},[up,st.msgs.length]);
+  useEffect(()=>{if(end.current)end.current.scrollIntoView({block:"end"});},[st.msgs.length,chatTyping]);
+  const send=e=>{e.preventDefault();const v=txt.trim();if(!v)return;setTxt("");const id=st.mid;
+    up(s=>({...s,mid:s.mid+2,msgs:[...s.msgs,{id,from:"me",text:{en:v,ar:v},ts:Date.now(),status:"sent"}]}));
+    setTimeout(()=>up(s=>({...s,msgs:s.msgs.map(m=>m.id===id?{...m,status:"deliv"}:m)})),700);
+    if(!st.nurseAvail)return;
+    setTimeout(()=>setChatTyping(true),1100);
+    setTimeout(()=>{const l=v.toLowerCase();const k=/feed|milk|bottle|رضع|اكل|أكل|لبن/.test(l)?"r_feed":/weight|وزن|kg|جرام/.test(l)?"r_weight":/visit|زيار|موعد/.test(l)?"r_visit":"r_def";
+      setChatTyping(false);up(s=>({...s,mid:s.mid+1,msgs:[...s.msgs.map(m=>m.id===id?{...m,status:"read"}:m),{id:id+1,from:"nurse",sim:true,text:{en:S[k][0],ar:S[k][1]},ts:Date.now(),seen:true}]}));},2900);};
+  return html`<div className="stack" style=${{gap:12}}>
+   <div className="card"><div className="row"><div className="tile peach"><${Icon} n="user"/></div><div className="grow"><div className="h2">${L(NAME.nurse)}</div><div className="small">${t("chatSim")}</div></div><span className=${"chip "+(st.nurseAvail?"ok":"warn")}>${st.nurseAvail?t("avail"):t("away")}</span></div></div>
+   ${!st.nurseAvail&&html`<div className="alert warn" role="status"><${Icon} n="clock" s=${20}/>${t("awayNote")}</div>`}
+   <div className="alert err" style=${{fontWeight:600}}><${Icon} n="alert" s=${20}/>${t("emerg")}</div>
+   <div className="chat" role="log" aria-live="polite">${st.msgs.length?st.msgs.map(m=>html`<div key=${m.id} className=${"bub "+(m.from==="me"?"me":"nu")}>${L(m.text)}<div className="meta"><span>${ft(m.ts)}</span>${m.from==="me"&&html`<span>${t(m.status==="read"?"s_read":m.status==="deliv"?"s_deliv":"s_sent")}</span>`}${m.sim&&html`<span>${t("simRep")}</span>`}</div></div>`):html`<${Empty} icon="msg" text=${t("emptyChat")}/>`}
+    ${chatTyping&&html`<div className="bub nu typing" aria-label=${t("typing")}><i></i><i></i><i></i></div>`}<div ref=${end}></div></div>
+   <form className="composer" onSubmit=${send}><label className="sr" htmlFor="msg-in">${t("typeMsg")}</label><input id="msg-in" className="inp" value=${txt} onChange=${e=>setTxt(e.target.value)} placeholder=${t("typeMsg")} autoComplete="off"/>
+    <button className="btn" type="submit" disabled=${!txt.trim()} aria-label=${t("send")}><span className="flip"><${Icon} n="send" s=${20}/></span></button></form></div>`;}
+
+/* ---------- notifications ---------- */
+const CATS=["health","feeding","nurse","visit","announce","camera"];
+const ROUTE_LABEL={"health:feeding":"feeding","health:weight":"weight","health:temp":"temp","health:spo2":"spo2",messages:"nMsg",visits:"nVisit",camera:"nCam",home:"nHome",health:"nHealth"};
+function Notifs(){const {st,up,t,L,rel,go}=useContext(Ctx);const [f,setF]=useState("all");const [un,setUn]=useState(false);const [det,setDet]=useState(null);const [pf,setPf]=useState(false);
+  const list=st.notifs.filter(n=>(f==="all"||n.cat===f)&&(!un||!n.read));const cnt=st.notifs.filter(n=>!n.read).length;
+  const cur=det?st.notifs.find(n=>n.id===det):null;
+  return html`<div className="stack"><div className="tabs" role="group" aria-label="Filter">
+    <button className="tab" aria-pressed=${f==="all"} onClick=${()=>setF("all")}>${t("n_all")}</button>${CATS.map(c=>html`<button key=${c} className="tab" aria-pressed=${f===c} onClick=${()=>setF(c)}>${t("c_"+c)}</button>`)}</div>
+   <div className="row wrap"><button className="tab" aria-pressed=${un} onClick=${()=>setUn(!un)}>${t("n_unread")} (${cnt})</button><span className="grow"></span>
+    <button className="btn sm sec" disabled=${!cnt} onClick=${()=>up(s=>({...s,notifs:s.notifs.map(n=>({...n,read:true}))}))}><${Icon} n="check" s=${18}/>${t("markAll")}</button>
+    <button className="iconbtn" onClick=${()=>setPf(true)} aria-label=${t("prefs")}><${Icon} n="sliders"/></button></div>
+   <div className="card">${list.length?html`<div className="list">${list.map(n=>html`<${NotifRow} key=${n.id} n=${n} onOpen=${x=>setDet(x.id)}/>`)}</div>`:html`<${Empty} icon="bell" text=${t("caught")}/>`}</div>
+   <${Sheet} open=${!!cur} onClose=${()=>setDet(null)} title=${cur?L(cur.t):""}>${cur&&html`<div className="stack"><span className="chip" style=${{alignSelf:"flex-start"}}>${t("c_"+cur.cat)}</span><p>${L(cur.b)}</p><p className="small">${rel(cur.ts)}</p>
+     <button className="btn block" onClick=${()=>{const to=cur.to;setDet(null);go(to);}}>${t("goTo",{s:t(ROUTE_LABEL[cur.to]||"nHome")})}</button>
+     <button className="btn sec block" onClick=${()=>{up(s=>({...s,notifs:s.notifs.map(n=>n.id===cur.id?{...n,read:!n.read}:n)}));}}>${t("markRead")}</button></div>`}<//>
+   <${Sheet} open=${pf} onClose=${()=>setPf(false)} title=${t("prefs")}><${PrefList}/><//></div>`;}
+function PrefList(){const {st,up,t}=useContext(Ctx);
+  return html`<div className="list">${CATS.map(c=>html`<div className="li" key=${c} style=${{alignItems:"center"}}><div className="tile" style=${{width:38,height:38,borderRadius:12}}><${Icon} n=${catIcon(c)} s=${18}/></div><div className="grow" style=${{fontWeight:700}}>${t("c_"+c)}</div>
+    <${Toggle} on=${st.prefs[c]!==false} label=${t("c_"+c)} onChange=${v=>up(s=>({...s,prefs:{...s.prefs,[c]:v}}))}/></div>`)}</div>`;}
+
+/* ---------- visits ---------- */
+function Visits(){const {st,t,fd,ft,L,go}=useContext(Ctx);const v=visitInfo(st);
+  const stMap={upcoming:["v_upcoming",""],completed:["v_completed","ok"],resched:["v_resched","warn"],none:["v_none",""]};
+  return html`<div className="stack"><span className="chip pink" style=${{alignSelf:"flex-start"}}>${t("demoData")}</span>
+   ${v.when?html`<div className="card"><div className="row"><div className="tile"><${Icon} n="cal"/></div><div className="grow"><div className="small">${t("nextVisit")}</div><div className="h2">${fd(v.when,{weekday:"long",day:"numeric",month:"long"})}</div></div><span className=${"chip "+stMap[v.status][1]}>${t(stMap[v.status][0])}</span></div>
+     <div className="list" style=${{marginTop:8}}>
+      ${v.old&&html`<div className="li"><div className="grow small">${t("vOld")}</div><b className="num strike">${fd(v.old,{day:"numeric",month:"short"})} · ${ft(v.old)}</b></div>`}
+      <div className="li"><div className="grow small">${v.old?t("vNew"):t("vTime")}</div><b className="num">${v.status==="completed"?ft(v.when):fd(v.when,{day:"numeric",month:"short"})+" · "+ft(v.when)}</b></div>
+      <div className="li"><div className="grow small">${t("hospital")}</div><b>${L(NAME.hosp)}</b></div><div className="li"><div className="grow small">${t("vDept")}</div><b>${t("dept")}</b></div></div></div>
+     <div className="card"><h3 className="h2">${t("vInst")}</h3><p style=${{marginTop:6}}>${t("inst")}</p></div>`
+    :html`<div className="card"><${Empty} icon="cal" text=${t("noVisitD")}/></div>`}
+   <div className="card"><h3 className="h2" style=${{marginBottom:12}}>${t("vTl")}</h3><div className="tl">
+     ${v.next&&html`<div className="ev next"><div style=${{fontWeight:700}}>${fd(v.next,{weekday:"short",day:"numeric",month:"short"})} · ${ft(v.next)}</div><span className=${"chip "+stMap[v.status][1]}>${t(stMap[v.status][0])}</span></div>`}
+     ${v.past.map((p,i)=>html`<div className="ev done" key=${i}><div style=${{fontWeight:700}}>${fd(p.ts,{weekday:"short",day:"numeric",month:"short"})} · ${ft(p.ts)}</div><span className="chip ok"><${Icon} n="check" s=${14}/>${t("v_completed")}</span></div>`)}</div></div></div>`;}
+
+/* ---------- profile / settings ---------- */
+function Profile(){const {t,go,L,lang,up,st,toast}=useContext(Ctx);const [lo,setLo]=useState(false);
+  const rows=[["mom","user"],["bb","baby"],["hosp","hosp"],["prefs","bell"],["sec","shield"],["priv","eye"],["help","help"],["about","info"]];
+  return html`<div className="stack"><div className="card row"><div className="tile pink" style=${{width:56,height:56,borderRadius:20}}><${Icon} n="user" s=${28}/></div><div className="grow"><div className="h2">${L(NAME.mom)}</div><div className="sub">${L(NAME.hosp)}</div></div></div>
+   <div className="card"><div className="small" style=${{marginBottom:8}}>${t("lang")}</div><div className="tabs" role="group" aria-label=${t("lang")}>
+     <button className="tab" aria-pressed=${lang==="en"} onClick=${()=>up({lang:"en"})}>English</button><button className="tab" aria-pressed=${lang==="ar"} onClick=${()=>up({lang:"ar"})}>العربية</button></div></div>
+   <div className="card" style=${{paddingBlock:4}}>${rows.map(([k,i])=>html`<button key=${k} className="linkrow" onClick=${()=>go("sub:"+k)}><div className="tile" style=${{width:38,height:38,borderRadius:12}}><${Icon} n=${i} s=${18}/></div><span className="grow" style=${{fontWeight:700}}>${t(k)}</span><span className="flip"><${Icon} n="chev" s=${18}/></span></button>`)}
+    <button className="linkrow" onClick=${()=>go("visits")}><div className="tile" style=${{width:38,height:38,borderRadius:12}}><${Icon} n="cal" s=${18}/></div><span className="grow" style=${{fontWeight:700}}>${t("nVisit")}</span><span className="flip"><${Icon} n="chev" s=${18}/></span></button></div>
+   <button className="btn danger block" onClick=${()=>setLo(true)}><${Icon} n="logout" s=${20}/>${t("logout")}</button>
+   <${Sheet} open=${lo} onClose=${()=>setLo(false)} title=${t("logoutQ")}><div className="stack"><p>${t("logoutD")}</p><div className="row"><button className="btn sec grow" onClick=${()=>setLo(false)}>${t("cancel")}</button>
+     <button className="btn danger grow" onClick=${()=>{setLo(false);up({authed:false,expired:false});go("login");}}>${t("logout")}</button></div></div><//></div>`;}
+function SubPage(){const {route,t,L,lang,up,fd,st}=useContext(Ctx);const k=route.p;
+  const KV=(a,b)=>html`<div className="li"><div className="grow small">${a}</div><b>${b}</b></div>`;
+  let body;
+  if(k==="mom")body=html`<div className="list">${KV(t("name"),L(NAME.mom))}${KV(t("hospital"),L(NAME.hosp))}</div>`;
+  else if(k==="bb")body=html`<div className="list">${KV(t("name"),L(NAME.baby))}${KV(t("dob"),fd(new Date("2026-09-24T00:00:00"),{day:"numeric",month:"long",year:"numeric"}))}${KV(t("unit"),t("nicu"))}${KV(t("room"),t("bedNo"))}</div>`;
+  else if(k==="hosp")body=html`<div className="list">${KV(t("hospital"),L(NAME.hosp))}${KV(t("unit"),t("nicu"))}${KV(t("vDept"),t("dept"))}</div>`;
+  else if(k==="prefs")body=html`<${PrefList}/>`;
+  else if(k==="sec")body=html`<div className="alert info"><${Icon} n="shield" s=${20}/>${t("secD")}</div>`;
+  else if(k==="priv")body=html`<div className="alert info"><${Icon} n="eye" s=${20}/>${t("privD")}</div>`;
+  else if(k==="help")body=html`<div className="alert warn"><${Icon} n="help" s=${20}/>${t("helpD")}</div>`;
+  else body=html`<div className="stack"><${Logo} size=${64} lang=${lang}/><p>${t("aboutD")}</p><span className="chip">${t("ver")}</span></div>`;
+  return html`<div className="card stack"><h2 className="h2">${t(k)}</h2>${body}</div>`;}
+
+/* ---------- demo panel ---------- */
+function Btn({l,f,i}){return html`<button className="btn sec sm" onClick=${f}><${Icon} n=${i} s=${16}/>${l}</button>`;}
+function DemoPanel({open,onClose}){const {t,st,up,toast,push,go,setChatTyping}=useContext(Ctx);const [rs,setRs]=useState(false);
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const A={
+   health:()=>{const v=pick([36.7,36.8,36.9,37.0]),s=pick([95,96,97,98]),now=Date.now();up(x=>({...x,temps:[...x.temps.slice(-11),{ts:now,v}],sats:[...x.sats.slice(-11),{ts:now,v:s}],lastUp:now}));
+     push({cat:"health",t:B("New health update","تحديث صحي جديد"),b:B("New temperature and oxygen readings were recorded.","اتسجّلت قراءات جديدة للحرارة والأكسجين."),to:"health:temp"});toast(t("dHealth"));},
+   nurse:()=>{up(x=>({...x,mid:x.mid+1,msgs:[...x.msgs,{id:x.mid,from:"nurse",sim:true,seen:false,ts:Date.now(),text:B("Hello! Layla is resting comfortably. (simulated message)","أهلًا! ليلى مرتاحة وبتستريح. (رسالة تجريبية)")}]}));
+     push({cat:"nurse",t:B("New message from Nurse Mona","رسالة جديدة من الممرضة منى"),b:B("Hello! Layla is resting comfortably.","أهلًا! ليلى مرتاحة وبتستريح."),to:"messages"});toast(t("dNurse"));},
+   feed:()=>{const ml=pick([24,26,28,30]),now=Date.now();up(x=>({...x,feeds:[...x.feeds.slice(-9),{ts:now,type:pick(["ebm","formula"]),ml,note:B("Feed completed.","الرضعة خلصت.")}],lastUp:now}));
+     push({cat:"feeding",t:B("Feeding recorded","اتسجّلت رضعة"),b:B("A new feed of "+ml+" ml was recorded.","اتسجّلت رضعة جديدة "+ml+" مل."),to:"health:feeding"});toast(t("dFeed"));},
+   lost:()=>{up({cam:"lost",camTries:0});push({cat:"camera",t:B("Camera interrupted","الكاميرا اتقطعت"),b:B("The camera lost connection. Open the camera to retry.","الكاميرا فقدت الاتصال. افتحي الكاميرا وحاولي تاني."),to:"camera"});toast(t("dCamLost"));},
+   back:()=>{up({cam:"live",camTries:0});toast(t("dCamBack"));},
+   notif:()=>{const p=pick([{cat:"announce",t:B("Hospital announcement","إعلان من المستشفى"),b:B("Parking is free for NICU families this week.","الانتظار مجاني لأسر العناية المركزة الأسبوع ده."),to:"home"},{cat:"visit",t:B("Visit reminder","تذكير بالزيارة"),b:B("Don't forget your visit. See the instructions.","متنسيش زيارتك. شوفي التعليمات."),to:"visits"}]);push(p);toast(t("dNotif"));},
+   avail:()=>{up(x=>({...x,nurseAvail:!x.nurseAvail}));},
+   expire:()=>{onClose();up({authed:false,expired:true});go("login");},
+   off:()=>{up({offline:true});onClose();},
+   visit:v=>{up({visit:v});const m={upcoming:["Visit scheduled","اتحددت زيارة","Your next visit is scheduled for tomorrow at 4:00 PM.","زيارتك الجاية بكرة الساعة ٤:٠٠ العصر."],completed:["Visit completed","الزيارة تمت","Today's visit is marked as completed.","زيارة النهارده اتسجّلت كمكتملة."],resched:["Visit rescheduled","الزيارة اتأجلت","Your visit moved by one day. See the new time.","زيارتك اتأجلت يوم. شوفي الموعد الجديد."],none:["No visit scheduled","مفيش زيارة محددة","There is no visit scheduled right now.","مفيش زيارة محددة دلوقتي."]}[v];
+     push({cat:"visit",t:B(m[0],m[1]),b:B(m[2],m[3]),to:"visits"});},
+   reset:()=>{const s=seed();s.lang=st.lang;try{localStorage.removeItem(LS);}catch(e){}up(()=>s);setRs(false);onClose();setChatTyping(false);go("splash");}};
+  const vs=[["upcoming","v_upcoming"],["completed","v_completed"],["resched","v_resched"],["none","v_none"]];
+  return html`<${Sheet} open=${open} onClose=${onClose} title=${t("demoCtl")}><div className="stack">
+    <div className="alert info"><${Icon} n="info" s=${20}/>${t("demoNote")}</div>
+    <div><div className="small" style=${{marginBottom:8}}>${t("dSim")}</div><div className="row wrap">
+     <${Btn} i="activity" l=${t("dHealth")} f=${A.health}/><${Btn} i="msg" l=${t("dNurse")} f=${A.nurse}/><${Btn} i="bottle" l=${t("dFeed")} f=${A.feed}/><${Btn} i="bell" l=${t("dNotif")} f=${A.notif}/>
+     <${Btn} i="wifi" l=${t("dCamLost")} f=${A.lost}/><${Btn} i="video" l=${t("dCamBack")} f=${A.back}/><${Btn} i="wifi" l=${t("dOff")} f=${A.off}/><${Btn} i="clock" l=${t("dExpire")} f=${A.expire}/></div></div>
+    <div className="row"><span className="grow" style=${{fontWeight:700}}>${t("dAvail")}</span><${Toggle} on=${st.nurseAvail} label=${t("dAvail")} onChange=${A.avail}/></div>
+    <div><div className="small" style=${{marginBottom:8}}>${t("dVisit")}</div><div className="tabs" role="group">${vs.map(([k,l])=>html`<button key=${k} className="tab" aria-pressed=${st.visit===k} onClick=${()=>A.visit(k)}>${t(l)}</button>`)}</div></div>
+    <button className="btn danger block" onClick=${()=>setRs(true)}><${Icon} n="refresh" s=${18}/>${t("dReset")}</button></div>
+   <${Sheet} open=${rs} onClose=${()=>setRs(false)} title=${t("dReset")}><div className="stack"><p>${t("dResetD")}</p><div className="row"><button className="btn sec grow" onClick=${()=>setRs(false)}>${t("cancel")}</button><button className="btn danger grow" onClick=${A.reset}>${t("dReset")}</button></div></div><//><//>`;}
+
+ReactDOM.createRoot(document.getElementById("root")).render(html`<${App}/>`);
+})();
+</script>
+
+<script>
+(function(){try{
+var d=document,sentinel=false,silent=false,q=false,tick=false;
+window.addEventListener('scroll',function(){if(tick)return;tick=true;requestAnimationFrame(function(){tick=false;d.body.classList.toggle('scrolled',(window.scrollY||0)>4)})},{passive:true});
+/* material ripple */
+d.addEventListener('pointerdown',function(e){var el=e.target.closest&&e.target.closest('.btn,.card.tap,.tab,.linkrow,.langbtn');if(!el||el.disabled)return;
+var r=el.getBoundingClientRect();el.style.setProperty('--rx',(e.clientX-r.left)+'px');el.style.setProperty('--ry',(e.clientY-r.top)+'px');el.style.setProperty('--rs',(Math.max(r.width,r.height)*2)+'px');
+el.classList.remove('rp-on');void el.offsetWidth;el.classList.add('rp-on');setTimeout(function(){el.classList.remove('rp-on')},600)},{passive:true});
+/* no pinch zoom / long-press menu on touch devices, like a native app */
+d.addEventListener('gesturestart',function(e){e.preventDefault()});
+if(window.matchMedia&&matchMedia('(pointer:coarse)').matches)d.addEventListener('contextmenu',function(e){if(!/INPUT|TEXTAREA/.test(e.target.tagName))e.preventDefault()});
+/* Android/browser back button navigates inside the app */
+function backBtn(){return d.querySelector('.hdr > button.iconbtn .flip')}
+function depth(){if(d.querySelector('.back'))return 1;if(!d.querySelector('.hdr'))return 0;if(backBtn())return 1;var f=d.querySelector('.nav button');return f&&f.getAttribute('aria-current')!=='page'?1:0}
+function sync(){q=false;var dp=depth();
+if(dp===1&&!sentinel){history.pushState({qarira:1},'');sentinel=true}
+else if(dp===0&&sentinel){sentinel=false;silent=true;history.back()}}
+new MutationObserver(function(){if(!q){q=true;requestAnimationFrame(function(){try{sync()}catch(e){q=false}})}}).observe(d.getElementById('root'),{childList:true,subtree:true});
+window.addEventListener('popstate',function(){if(silent){silent=false;return}if(!sentinel)return;sentinel=false;
+if(d.querySelector('.back')){d.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));return}
+var b=backBtn();if(b){b.closest('button').click();return}
+var f=d.querySelector('.nav button');if(f&&f.getAttribute('aria-current')!=='page')f.click()});
+}catch(e){}})();
+</script>
+
+</body></html>
